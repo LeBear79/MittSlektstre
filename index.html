@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Mitt Slektstre 1.2.1: trebildet ligger i egen fil (tree.png) -->
+<!-- Mitt Slektstre 1.3: innebygd SVG-tre uten ekstern bildefil -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
@@ -76,8 +76,11 @@ button,.file-btn{border:0;border-radius:8px;padding:10px 12px;font-weight:700;te
 .ornament:before,.ornament:after{content:"";position:absolute;top:-5px;width:9px;height:9px;border:1px solid var(--gold);background:var(--cream);transform:rotate(45deg)}
 .ornament:before{left:55px}.ornament:after{right:55px}
 
-.oak{position:absolute;inset:160px 75px 28px;z-index:1;opacity:.86;filter:drop-shadow(0 6px 7px rgba(70,48,24,.11))}
-.oak img{display:block;width:100%;height:100%;object-fit:fill}
+.oak{position:absolute;inset:160px 75px 28px;z-index:1;opacity:1;filter:drop-shadow(0 6px 7px rgba(70,48,24,.11))}
+.oak .oak-svg{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible}
+
+
+.oak .oak-svg{z-index:1;pointer-events:none}
 
 .oak:before{
   content:"";
@@ -185,8 +188,7 @@ body.preview-mode .oak{
   opacity:1!important;
   z-index:1!important;
 }
-body.preview-mode .oak img,
-body.preview-mode .oak .oak-fallback{
+body.preview-mode .oak .oak-svg{
   display:block!important;
   visibility:visible!important;
   width:100%!important;
@@ -200,8 +202,7 @@ body.preview-mode .tree{z-index:4!important}
     opacity:1!important;
     filter:contrast(1.32) saturate(1.08) drop-shadow(0 5px 7px rgba(70,48,24,.24));
   }
-  body.preview-mode .oak img,
-body.preview-mode .oak .oak-fallback{
+  body.preview-mode .oak .oak-svg{
     transform:scale(1.035);
     transform-origin:center bottom;
   }
@@ -294,8 +295,7 @@ body.preview-mode .oak .oak-fallback{
       <div class="ornament"></div>
 
       <div class="oak" aria-hidden="true">
-        <img src="tree.png" alt="Dekorativt eiketre" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-        <svg class="oak-fallback" viewBox="0 0 1200 780" role="img" aria-label="Dekorativt eiketre" style="display:none;width:100%;height:100%" xmlns="http://www.w3.org/2000/svg">
+        <svg class="oak-svg" viewBox="0 0 1200 780" role="img" aria-label="Dekorativt eiketre" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="trunkGrad" x1="0" x2="1">
               <stop offset="0" stop-color="#76502d"/><stop offset="0.45" stop-color="#b8874b"/><stop offset="1" stop-color="#6d4828"/>
