@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 1.1</title>
+<title>Mitt Slektstre 1.1.1.1</title>
 <style>
 :root{
   --green:#314e3a;
@@ -67,15 +67,15 @@ button,.file-btn{border:0;border-radius:8px;padding:10px 12px;font-weight:700;te
   border:14px ridge #8a6734;
   box-shadow:0 12px 34px rgba(0,0,0,.18);
 }
-.poster:before{content:"";position:absolute;inset:13px;border:1px solid rgba(105,77,34,.55);pointer-events:none}
-.poster:after{content:"";position:absolute;inset:21px;border:1px solid rgba(105,77,34,.18);pointer-events:none}
+.poster:before{content:"";position:absolute;inset:13px;border:1px solid rgba(105,77,34,.55);pointer-events:none;z-index:0}
+.poster:after{content:"";position:absolute;inset:21px;border:1px solid rgba(105,77,34,.18);pointer-events:none;z-index:0}
 .title{position:absolute;top:38px;left:0;right:0;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:51px;letter-spacing:2px;margin:0;font-weight:500;z-index:8}
 .subtitle{position:absolute;top:112px;left:0;right:0;text-align:center;letter-spacing:6px;text-transform:uppercase;font-size:12px;z-index:8}
 .ornament{position:absolute;top:141px;left:565px;right:565px;border-top:1px solid var(--gold);z-index:8}
 .ornament:before,.ornament:after{content:"";position:absolute;top:-5px;width:9px;height:9px;border:1px solid var(--gold);background:var(--cream);transform:rotate(45deg)}
 .ornament:before{left:55px}.ornament:after{right:55px}
 
-.oak{position:absolute;inset:160px 75px 28px;z-index:0;opacity:.78;filter:drop-shadow(0 6px 7px rgba(70,48,24,.11))}
+.oak{position:absolute;inset:160px 75px 28px;z-index:1;opacity:.86;filter:drop-shadow(0 6px 7px rgba(70,48,24,.11))}
 .oak svg{width:100%;height:100%}
 .connections{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
 .tree{position:absolute;inset:178px 48px 48px;z-index:4;display:flex;flex-direction:column;justify-content:space-between;gap:14px}
@@ -163,6 +163,27 @@ body.preview-mode .poster-controls{display:flex}
   input,select{font-size:16px}
   .preview-exit{top:10px;right:10px;max-width:calc(100vw - 20px)}
 }
+
+body.preview-mode .oak{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:1!important;
+}
+body.preview-mode .oak svg{
+  display:block!important;
+  visibility:visible!important;
+  width:100%!important;
+  height:100%!important;
+}
+body.preview-mode .connections{z-index:2!important}
+body.preview-mode .tree{z-index:4!important}
+@media(max-width:900px){
+  body.preview-mode .oak{
+    filter:contrast(1.12) saturate(.92) drop-shadow(0 4px 5px rgba(70,48,24,.14));
+  }
+}
+
 @media print{
   @page{size:A3 landscape;margin:4mm}
   body{background:#fff}
@@ -524,13 +545,21 @@ function fitPoster(){
     return;
   }
 
-  const padding=isMobileView()?10:24;
+  const padding=isMobileView()?8:24;
   const availableW=Math.max(1,wrap.clientWidth-padding*2);
   const availableH=Math.max(1,wrap.clientHeight-padding*2);
-  posterView.minScale=Math.min(availableW/poster.offsetWidth,availableH/poster.offsetHeight);
-  posterView.scale=posterView.minScale;
-  posterView.x=(wrap.clientWidth-poster.offsetWidth*posterView.scale)/2;
-  posterView.y=(wrap.clientHeight-poster.offsetHeight*posterView.scale)/2;
+
+  if(isMobileView()){
+    posterView.minScale=availableW/poster.offsetWidth;
+    posterView.scale=posterView.minScale;
+    posterView.x=(wrap.clientWidth-poster.offsetWidth*posterView.scale)/2;
+    posterView.y=8;
+  }else{
+    posterView.minScale=Math.min(availableW/poster.offsetWidth,availableH/poster.offsetHeight);
+    posterView.scale=posterView.minScale;
+    posterView.x=(wrap.clientWidth-poster.offsetWidth*posterView.scale)/2;
+    posterView.y=(wrap.clientHeight-poster.offsetHeight*posterView.scale)/2;
+  }
   applyPosterTransform();
 }
 function zoomPoster(factor,centerX,centerY){
@@ -654,7 +683,7 @@ function setupPosterInteractions(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 1.1',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 1.1.1',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
