@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 4.2</title>
+<title>Mitt Slektstre 4.3</title>
 <style>
 :root{
   --green:#314e3a;
@@ -59,61 +59,64 @@ button,.file-btn{border:0;border-radius:8px;padding:10px 12px;font-weight:700;te
 .poster{
   width:1600px;height:1131px;margin:0 auto;position:relative;overflow:hidden;
   background:
-    radial-gradient(circle at 50% 95%,rgba(180,145,74,.13),transparent 28%),
-    linear-gradient(#fffdf8,#fbf6e9);
-  border:13px ridge #96713a;
-  box-shadow:0 10px 28px rgba(0,0,0,.15);
+    radial-gradient(circle at 50% 92%,rgba(183,144,72,.15),transparent 30%),
+    radial-gradient(circle at 15% 20%,rgba(120,90,45,.035),transparent 18%),
+    radial-gradient(circle at 82% 28%,rgba(120,90,45,.03),transparent 20%),
+    repeating-linear-gradient(0deg,rgba(92,70,39,.018) 0 1px,transparent 1px 4px),
+    linear-gradient(#fffdf7,#f8f0df);
+  border:14px ridge #8a6734;
+  box-shadow:0 12px 34px rgba(0,0,0,.18);
 }
 .poster:before{content:"";position:absolute;inset:13px;border:1px solid rgba(105,77,34,.55);pointer-events:none}
 .poster:after{content:"";position:absolute;inset:21px;border:1px solid rgba(105,77,34,.18);pointer-events:none}
-.title{position:absolute;top:36px;left:0;right:0;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:60px;letter-spacing:3px;margin:0;font-weight:500;z-index:8}
-.subtitle{position:absolute;top:108px;left:0;right:0;text-align:center;letter-spacing:6px;text-transform:uppercase;font-size:12px;z-index:8}
-.ornament{position:absolute;top:137px;left:560px;right:560px;border-top:1px solid var(--gold);z-index:8}
+.title{position:absolute;top:38px;left:0;right:0;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:51px;letter-spacing:2px;margin:0;font-weight:500;z-index:8}
+.subtitle{position:absolute;top:112px;left:0;right:0;text-align:center;letter-spacing:6px;text-transform:uppercase;font-size:12px;z-index:8}
+.ornament{position:absolute;top:141px;left:565px;right:565px;border-top:1px solid var(--gold);z-index:8}
 .ornament:before,.ornament:after{content:"";position:absolute;top:-5px;width:9px;height:9px;border:1px solid var(--gold);background:var(--cream);transform:rotate(45deg)}
 .ornament:before{left:55px}.ornament:after{right:55px}
 
-.oak{position:absolute;inset:155px 70px 25px;z-index:0;opacity:.68}
+.oak{position:absolute;inset:160px 75px 28px;z-index:0;opacity:.78;filter:drop-shadow(0 6px 7px rgba(70,48,24,.11))}
 .oak svg{width:100%;height:100%}
 .connections{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
-.tree{position:absolute;inset:165px 45px 45px;z-index:4;display:flex;flex-direction:column;justify-content:space-between}
+.tree{position:absolute;inset:178px 48px 48px;z-index:4;display:flex;flex-direction:column;justify-content:space-between;gap:14px}
 .gen{display:grid;justify-items:center;align-items:start}
-.g4{grid-template-columns:repeat(16,1fr);gap:8px}
-.g3{grid-template-columns:repeat(8,1fr);gap:18px;padding:0 70px}
-.g2{grid-template-columns:repeat(4,1fr);gap:90px;padding:0 185px}
-.g1{grid-template-columns:repeat(2,1fr);gap:360px;padding:0 390px}
-.g0{grid-template-columns:1fr;padding:0 675px}
+.g4{grid-template-columns:repeat(16,1fr);gap:10px}
+.g3{grid-template-columns:repeat(8,1fr);gap:24px;padding:0 78px}
+.g2{grid-template-columns:repeat(4,1fr);gap:110px;padding:0 195px}
+.g1{grid-template-columns:repeat(2,1fr);gap:390px;padding:0 405px}
+.g0{grid-template-columns:1fr;padding:0 650px}
 
 .person{position:relative;text-align:center;cursor:pointer;filter:drop-shadow(0 2px 2px rgba(40,30,15,.12))}
 .person.active .portrait{box-shadow:0 0 0 5px rgba(49,78,58,.2)}
-.portrait{width:70px;height:70px;margin:0 auto -7px;border-radius:50%;border:4px solid #fffaf0;outline:2px solid var(--gold);background:#ddd8ce;object-fit:cover;display:grid;place-items:center;font-weight:700;color:#6c685f;position:relative;z-index:2}
-.plate{min-width:94px;max-width:135px;margin:0 auto;background:linear-gradient(#fffef9,#f5ead2);border:1px solid var(--gold-dark);padding:9px 6px 7px;position:relative;z-index:1}
+.portrait{width:76px;height:76px;margin:0 auto -8px;border-radius:50%;border:5px solid #fffaf0;outline:2px solid var(--gold);background:radial-gradient(circle at 35% 30%,#eee9df,#d8d1c4);object-fit:cover;display:grid;place-items:center;font-weight:700;color:#6c685f;position:relative;z-index:2;box-shadow:0 3px 8px rgba(55,39,18,.18)}
+.plate{min-width:100px;max-width:145px;margin:0 auto;background:linear-gradient(180deg,#fffefb 0%,#f8eed9 68%,#efe0bf 100%);border:1px solid #7f612e;padding:10px 7px 8px;position:relative;z-index:1;box-shadow:0 2px 5px rgba(63,46,23,.12);border-radius:2px}
 .plate:before,.plate:after{content:"";position:absolute;top:5px;bottom:5px;width:7px;border-top:1px solid var(--gold-dark);border-bottom:1px solid var(--gold-dark)}
 .plate:before{left:-7px}.plate:after{right:-7px}
-.pname{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:13px;line-height:1.08;overflow-wrap:anywhere;hyphens:none}
+.pname{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:13px;line-height:1.08;overflow-wrap:break-word;hyphens:none}
 .years{font-size:10px;color:#493f32;margin-top:3px}
 
-.g4 .portrait{width:54px;height:54px;border-width:3px;outline-width:1px}
-.g4 .plate{min-width:82px;max-width:92px;padding:7px 3px 6px}
-.g4 .pname{font-size:9px;line-height:1.05}
-.g4 .years{font-size:7.5px}
-.g3 .portrait{width:66px;height:66px}
-.g3 .plate{min-width:98px;max-width:112px}
-.g3 .pname{font-size:11px}
-.g2 .portrait{width:94px;height:94px}
-.g2 .plate{min-width:138px;max-width:160px}
+.g4 .portrait{width:56px;height:56px;border-width:3px;outline-width:1px}
+.g4 .plate{min-width:86px;max-width:96px;padding:7px 3px 6px}
+.g4 .pname{font-size:9.2px;line-height:1.04}
+.g4 .years{font-size:7.7px}
+.g3 .portrait{width:70px;height:70px}
+.g3 .plate{min-width:104px;max-width:118px}
+.g3 .pname{font-size:11.5px}
+.g2 .portrait{width:100px;height:100px}
+.g2 .plate{min-width:145px;max-width:165px}
 .g2 .pname{font-size:15px}
 .g2 .years{font-size:11px}
-.g1 .portrait{width:116px;height:116px}
-.g1 .plate{min-width:178px;max-width:200px;padding:12px 9px 10px}
+.g1 .portrait{width:124px;height:124px}
+.g1 .plate{min-width:185px;max-width:205px;padding:12px 10px 10px}
 .g1 .pname{font-size:18px}
 .g1 .years{font-size:12px}
-.g0 .portrait{width:150px;height:150px;border-width:6px;outline-width:3px}
-.g0 .plate{min-width:255px;max-width:285px;padding:14px 14px 12px}
-.g0 .pname{font-size:27px;letter-spacing:1px;white-space:nowrap}
+.g0 .portrait{width:156px;height:156px;border-width:6px;outline-width:3px}
+.g0 .plate{width:300px;min-width:300px;max-width:300px;padding:14px 18px 12px}
+.g0 .pname{font-size:28px;letter-spacing:1.2px;white-space:nowrap;overflow-wrap:normal}
 .g0 .years{font-size:16px}
 
-.legend{position:absolute;left:52px;bottom:42px;font-size:12px;color:#5a5145;z-index:8}
-.quote{position:absolute;right:58px;bottom:40px;width:360px;text-align:center;font-family:Georgia,serif;font-style:italic;font-size:14px;z-index:8}
+.legend{position:absolute;left:54px;bottom:44px;font-size:12px;color:#5a5145;z-index:8}
+.quote{position:absolute;right:60px;bottom:42px;width:390px;text-align:center;font-family:Georgia,serif;font-style:italic;font-size:15px;line-height:1.25;color:#514534;z-index:8}
 .preview-exit{display:none;position:fixed;right:12px;top:12px;z-index:1000;background:#fff;color:var(--green);border:1px solid #d5cec2;box-shadow:0 3px 12px rgba(0,0,0,.15)}
 body.preview-mode .sidebar,body.preview-mode .toolbar{display:none}
 body.preview-mode .app{display:block}
@@ -452,7 +455,7 @@ function closePoster(){
 }
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 4.2',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 4.3',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
