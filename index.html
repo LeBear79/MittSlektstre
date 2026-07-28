@@ -1,581 +1,549 @@
-<!doctype html>
-<!-- Mitt Slektstre 3.0: fullbredde plakat uten generasjonstitler -->
+<!DOCTYPE html>
 <html lang="no">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 3.0 – rettet hovedpersonkort</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mitt Slektstre 3.0</title>
 <style>
 :root{
-  --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
-  --paper:#fffdf8;--canvas:#e7e4de;--line:#9b8b72;
-  --mother:#d9a79e;--mother-bg:#fff7f4;--father:#9db5cf;--father-bg:#f5f9fd;
+  --bg:#eeeae2;
+  --panel:#ffffff;
+  --text:#28251f;
+  --muted:#736c62;
+  --green:#314d38;
+  --gold:#a88645;
+  --gold-dark:#745c2e;
+  --cream:#fbf6e9;
+  --line:#91723c;
 }
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--canvas)}
-button,input,select{font:inherit} button{cursor:pointer}
-.app{display:grid;grid-template-columns:340px minmax(0,1fr);min-height:100vh}
-.sidebar{background:#fff;border-right:1px solid #ddd8cf;padding:20px;overflow:auto}
-.sidebar h1{margin:0;color:var(--green);font:700 28px Georgia,serif}
-.lead{margin:7px 0 16px;color:var(--muted);font-size:14px;line-height:1.45}
-.progress-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}
-.progress{height:8px;background:#ebe7df;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--green);width:0}
-.editor{margin-top:16px;border:1px solid #ddd7cd;border-radius:12px;padding:15px;background:#fffdfa}
-.kicker{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em}.editor h2{margin:4px 0}.note{font-size:13px;color:var(--muted);margin:0 0 14px}
-.preview{width:92px;height:92px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;background:#e7e3da;border:3px solid #fff;outline:1px solid #b9aa91;overflow:hidden;font-size:24px;color:#777;font-weight:700}.preview img{width:100%;height:100%;object-fit:cover}
-.field{margin-bottom:12px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}.field input,.field select{width:100%;padding:10px;border:1px solid #cfc9bf;border-radius:7px;background:#fff}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.buttons{display:grid;gap:8px;margin-top:12px}.button-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;text-align:center;display:block}.primary{background:var(--green);color:#fff}.secondary{background:#ece9e3;color:#352f28}.ghost{background:#faf8f4;border:1px solid #ddd6cb;color:#4a443c}.danger{background:#f4dddd;color:#8b3333}.file-btn{background:var(--green);color:#fff;cursor:pointer}.file-btn.alt{background:#ece9e3;color:#352f28}.hidden{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}.help{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}.jump{margin-top:16px;padding-top:15px;border-top:1px solid #e2ddd5}.info{margin-top:14px;background:#edf2ec;color:#3b523f;border-radius:8px;padding:11px;font-size:12px;line-height:1.4}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:grid;grid-template-columns:380px 1fr;min-height:100vh}
+.sidebar{background:var(--panel);border-right:1px solid #d8d1c5;padding:22px;overflow-y:auto}
+.brand h1{margin:0;color:var(--green);font-size:28px}
+.brand p{margin:6px 0 18px;color:var(--muted);line-height:1.4}
+.progress-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
+.progress{height:10px;border-radius:999px;background:#e7e2da;overflow:hidden}
+.progress-bar{height:100%;background:var(--green);width:0}
+.step-card{margin-top:18px;border:1px solid #ddd6ca;border-radius:14px;padding:16px;background:#fff}
+.step-kicker{color:var(--green);font-size:12px;font-weight:700;text-transform:uppercase}
+.step-card h2{margin:5px 0 4px}
+.relation-note{margin:0 0 16px;color:var(--muted);font-size:14px}
+.photo-preview{width:96px;height:96px;border-radius:50%;margin:0 auto 16px;border:3px solid #fff;outline:1px solid #b79d68;background:#e5e1da;display:grid;place-items:center;overflow:hidden;font-size:24px;font-weight:700;color:#777}
+.photo-preview img{width:100%;height:100%;object-fit:cover}
+.field{margin-bottom:13px}
+label{display:block;margin-bottom:6px;font-weight:700;font-size:14px}
+input,select{width:100%;padding:10px 11px;border:1px solid #cfc7bb;border-radius:9px;font:inherit;background:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.buttons{display:grid;gap:9px;margin-top:15px}
+.button-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+button{border:0;border-radius:9px;padding:11px 13px;font:inherit;font-weight:700;cursor:pointer}
+.primary{background:var(--green);color:#fff}
+.secondary{background:#ece8e0;color:#34312c}
+.ghost{background:#f7f5f1;color:#4b4842;border:1px solid #ddd6ca}
+.danger{background:#f4dddd;color:#8d3434}
+.generation-jump{margin-top:18px;border-top:1px solid #e1dbd1;padding-top:16px}
+.summary{margin-top:16px;padding:12px;border-radius:10px;background:#edf2ec;color:#3d523f;font-size:13px;line-height:1.4}
+.photo-buttons{display:grid;gap:8px}
+.hidden-file{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+.file-button{display:block;width:100%;padding:11px 13px;border-radius:9px;background:var(--green);color:#fff;text-align:center;font-weight:700;cursor:pointer}
+.file-button.secondary-file{background:#ece8e0;color:#34312c}
+.camera-help{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.35}
 
-.workspace{padding:18px;overflow:auto}.toolbar{width:1500px;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}.toolbar-actions{display:flex;gap:8px}.poster-wrap{min-width:1500px}
-.poster{width:1500px;height:1061px;margin:0 auto;position:relative;overflow:hidden;background:linear-gradient(180deg,#fffefa 0%,#fbf7ee 100%);border:1px solid #cfc7b8;box-shadow:0 10px 28px rgba(0,0,0,.16)}
-.poster:before{content:"";position:absolute;inset:12px;border:1px solid rgba(122,108,84,.24);pointer-events:none}
-.title{position:absolute;top:34px;left:0;right:0;text-align:center;font:500 50px Georgia,"Times New Roman",serif;letter-spacing:4px;margin:0;z-index:8;color:#263c2d}.subtitle{position:absolute;top:105px;left:0;right:0;text-align:center;letter-spacing:4px;text-transform:uppercase;font-size:11px;z-index:8;color:#575147}.ornament{position:absolute;top:136px;left:570px;right:570px;border-top:1px solid rgba(109,84,40,.38);z-index:8}
-.connections{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;overflow:visible}
-.tree{position:absolute;left:34px;right:34px;top:148px;bottom:28px;z-index:4}
-.gen{position:absolute;left:0;right:0;display:grid;justify-content:center;justify-items:center;align-items:start}
-.g4{top:0;grid-template-columns:repeat(16,78px);column-gap:8px}
-.g3{top:146px;grid-template-columns:repeat(8,112px);column-gap:48px}
-.g2{top:316px;grid-template-columns:repeat(4,146px);column-gap:170px}
-.g1{top:510px;grid-template-columns:repeat(2,172px);column-gap:520px}
-.g0{top:696px;display:flex;justify-content:center}
-.person{position:relative;text-align:center;cursor:pointer;filter:drop-shadow(0 2px 2px rgba(40,30,15,.06))}.person.active .card-shell{box-shadow:0 0 0 4px rgba(56,91,67,.17)}
-.card-shell{display:flex;flex-direction:column;align-items:center;background:#fffdf9;border:1px solid #cfc7bb;border-radius:8px;padding:8px 7px 9px;min-height:100%;transition:.15s ease}
-.person.maternal .card-shell{background:var(--mother-bg);border-color:var(--mother)}.person.paternal .card-shell{background:var(--father-bg);border-color:var(--father)}.person.main-person .card-shell{background:#fafcf4;border-color:#7f9a69}
-.portrait{width:54px;height:54px;margin:0 auto 7px;border-radius:50%;border:2px solid #fff;outline:1px solid #c5bcae;background:radial-gradient(circle at 35% 30%,#eee9df,#d8d1c4);object-fit:cover;display:grid;place-items:center;font-weight:700;color:#6c685f;box-shadow:none}
-.plate{min-width:0;max-width:none;margin:0;padding:0;background:none!important;border:0!important;box-shadow:none!important}.pname{font:700 11px/1.12 Georgia,"Times New Roman",serif;overflow-wrap:break-word}.years{font-size:9px;color:#5a544b;margin-top:4px}
-.g4 .person{width:78px}.g4 .card-shell{height:124px;padding:7px 5px}.g4 .portrait{width:50px;height:50px}.g4 .pname{font-size:9px}.g4 .years{font-size:7.5px}
-.g3 .person{width:112px}.g3 .card-shell{height:150px}.g3 .portrait{width:68px;height:68px}.g3 .pname{font-size:12px}.g3 .years{font-size:9px}
-.g2 .person{width:146px}.g2 .card-shell{height:174px;padding-top:12px}.g2 .portrait{width:86px;height:86px}.g2 .pname{font-size:14px}.g2 .years{font-size:10px}
-.g1 .person{width:172px}.g1 .card-shell{height:180px;padding-top:12px}.g1 .portrait{width:96px;height:96px}.g1 .pname{font-size:16px}.g1 .years{font-size:11px}
-.g0 .person{width:210px}/* Hovedpersonkortet får nok høyde til bilde, navn på to linjer og årstall. */.g0 .card-shell{height:auto;min-height:194px;padding:10px 10px 12px}.g0 .portrait{width:104px;height:104px;outline-color:#7f9a69;flex:0 0 auto}.g0 .plate{display:flex;flex-direction:column;align-items:center;width:100%}.g0 .pname{font-size:20px;line-height:1.05;white-space:normal;margin:0}.g0 .years{font-size:12px;line-height:1.2;margin-top:4px;position:static}
-.legend{position:absolute;left:56px;bottom:14px;font-size:12px;color:#5a5145;z-index:8}.quote{display:none}
-.preview-exit{display:none;position:fixed;right:12px;top:12px;z-index:1002;background:#fff;color:var(--green);border:1px solid #d5cec2;box-shadow:0 3px 12px rgba(0,0,0,.15);font-size:15px}.poster-controls{display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:1002;background:rgba(255,255,255,.96);padding:6px;border-radius:12px;box-shadow:0 3px 15px rgba(0,0,0,.2);gap:5px}.poster-controls button{min-width:46px;padding:9px 12px;border-radius:8px;background:#ece8e0;color:#2f4835}.poster-controls #zoomReset{min-width:82px}
-body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,body.preview-mode .toolbar{display:none}body.preview-mode .app{display:block}body.preview-mode .workspace{position:fixed;inset:0;padding:0;overflow:hidden;background:#d9d5ce;z-index:999}body.preview-mode .poster-wrap{position:absolute;inset:0;min-width:0;width:100%;height:100%!important;overflow:hidden;display:block;touch-action:none;cursor:grab}body.preview-mode .poster-wrap.dragging{cursor:grabbing}body.preview-mode .poster{position:absolute;left:0;top:0;margin:0;transform-origin:0 0;will-change:transform;user-select:none}body.preview-mode .preview-exit{display:block}body.preview-mode .poster-controls{display:flex}
-@media(max-width:900px){body:not(.preview-mode){overflow-x:hidden}body:not(.preview-mode) .app{display:block}body:not(.preview-mode) .sidebar{width:100%;min-height:100vh;border-right:0;padding:16px}body:not(.preview-mode) .workspace{display:none}.sidebar h1{font-size:25px}.lead{font-size:13px}.editor{padding:14px}button,.file-btn{min-height:45px}input,select{font-size:16px}.preview-exit{top:10px;right:10px;max-width:calc(100vw - 20px)}}
-@media print{@page{size:A3 landscape;margin:4mm}html,body{width:100%;height:100%;margin:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.sidebar,.toolbar,.preview-exit,.poster-controls{display:none!important}.app{display:block}.workspace{padding:0;overflow:visible}.poster-wrap{min-width:0;width:100%;height:auto!important;overflow:visible}.poster{width:100%;height:auto;aspect-ratio:1500/1061;margin:0;box-shadow:none;transform:none!important;overflow:hidden;break-inside:avoid;page-break-inside:avoid}.tree{top:148px;bottom:28px}.g0{top:696px}.legend{bottom:12px}}
+.workspace{padding:24px;overflow:auto}
+.toolbar{width:1400px;margin:0 auto 12px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:14px}
+.toolbar button{width:auto;padding:9px 12px}
+.poster-wrap{min-width:1400px}
+.poster{
+  width:1400px;
+  height:990px;
+  margin:0 auto;
+  position:relative;
+  overflow:hidden;
+  padding:40px 35px 26px;
+  background:
+    radial-gradient(circle at 50% 94%,rgba(215,194,139,.22),transparent 28%),
+    linear-gradient(180deg,#fffdf7 0%,#fbf6e9 100%);
+  border:12px ridge #9c7b40;
+  box-shadow:0 8px 30px rgba(0,0,0,.12);
+}
+.poster:before{
+  content:"";
+  position:absolute;inset:14px;
+  border:1px solid rgba(126,94,39,.58);
+  pointer-events:none;
+}
+.poster:after{
+  content:"";
+  position:absolute;inset:22px;
+  border:1px solid rgba(126,94,39,.20);
+  pointer-events:none;
+}
+.corner{
+  position:absolute;width:150px;height:150px;opacity:.48;z-index:0;
+  background:
+    radial-gradient(ellipse at 65% 70%,transparent 53%,rgba(72,104,65,.55) 55% 58%,transparent 60%),
+    radial-gradient(ellipse at 36% 38%,rgba(87,124,78,.55) 0 8%,transparent 9%),
+    radial-gradient(ellipse at 55% 25%,rgba(87,124,78,.48) 0 7%,transparent 8%),
+    radial-gradient(ellipse at 73% 47%,rgba(87,124,78,.46) 0 8%,transparent 9%);
+}
+.corner.tl{left:24px;top:24px}
+.corner.tr{right:24px;top:24px;transform:scaleX(-1)}
+.corner.bl{left:24px;bottom:24px;transform:scaleY(-1)}
+.corner.br{right:24px;bottom:24px;transform:scale(-1)}
+
+.title{
+  position:relative;z-index:4;
+  text-align:center;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:54px;
+  letter-spacing:2px;
+  color:#261d12;
+  margin:0;
+  text-transform:uppercase;
+  font-weight:500;
+}
+.subtitle{
+  position:relative;z-index:4;
+  text-align:center;
+  margin:4px 0 18px;
+  letter-spacing:7px;
+  font-size:13px;
+  color:#3e382f;
+  text-transform:uppercase;
+}
+.title-ornament{
+  width:460px;height:18px;margin:3px auto 10px;position:relative;z-index:4;
+  border-top:1px solid var(--gold);
+}
+.title-ornament:before,.title-ornament:after{
+  content:"";position:absolute;top:-5px;width:10px;height:10px;
+  border:1px solid var(--gold);transform:rotate(45deg);background:var(--cream)
+}
+.title-ornament:before{left:72px}.title-ornament:after{right:72px}
+
+.botanical-tree{
+  position:absolute;
+  left:175px;right:175px;top:185px;bottom:60px;
+  opacity:.20;z-index:0;pointer-events:none;
+}
+.botanical-tree svg{width:100%;height:100%}
+#connections{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:1;pointer-events:none;overflow:visible
+}
+#tree{
+  position:relative;z-index:3;
+  height:790px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:0 5px 8px;
+}
+.generation{
+  display:grid;
+  align-items:start;
+  justify-items:center;
+  position:relative;
+}
+.gen-4{grid-template-columns:repeat(16,1fr);gap:4px}
+.gen-3{grid-template-columns:repeat(8,1fr);gap:14px;padding:0 50px}
+.gen-2{grid-template-columns:repeat(4,1fr);gap:70px;padding:0 145px}
+.gen-1{grid-template-columns:repeat(2,1fr);gap:310px;padding:0 325px}
+.gen-0{grid-template-columns:1fr;padding:0 560px}
+
+.person{
+  position:relative;
+  text-align:center;
+  min-width:0;
+  cursor:pointer;
+  filter:drop-shadow(0 2px 2px rgba(50,37,20,.09));
+}
+.person.active .portrait{outline:4px solid rgba(48,77,56,.30)}
+.portrait{
+  width:68px;height:68px;
+  margin:0 auto -5px;
+  border-radius:50%;
+  border:3px solid #fbf7ea;
+  outline:2px solid var(--gold);
+  background:#e1ddd3;
+  object-fit:cover;
+  display:grid;place-items:center;
+  color:#777;font-weight:700;
+  position:relative;z-index:2;
+}
+.nameplate{
+  min-width:92px;
+  max-width:130px;
+  margin:0 auto;
+  background:linear-gradient(#fffdf6,#f7efdd);
+  border:1px solid var(--gold-dark);
+  padding:8px 5px 6px;
+  clip-path:polygon(7% 0,93% 0,93% 8%,100% 8%,100% 92%,93% 92%,93% 100%,7% 100%,7% 92%,0 92%,0 8%,7% 8%);
+  position:relative;z-index:1;
+}
+.name{
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:700;
+  font-size:13px;
+  line-height:1.05;
+  min-height:27px;
+  overflow-wrap:anywhere;
+}
+.years{font-size:10px;color:#423b31;margin-top:3px}
+.gen-4 .portrait{width:48px;height:48px;border-width:2px;outline-width:1px}
+.gen-4 .nameplate{min-width:70px;max-width:78px;padding:6px 2px 5px}
+.gen-4 .name{font-size:8.5px;min-height:19px}
+.gen-4 .years{font-size:7.5px}
+.gen-3 .portrait{width:58px;height:58px}
+.gen-3 .nameplate{min-width:84px;max-width:100px}
+.gen-3 .name{font-size:10.5px}
+.gen-2 .portrait{width:82px;height:82px}
+.gen-2 .nameplate{min-width:120px;max-width:145px}
+.gen-2 .name{font-size:15px;min-height:auto}
+.gen-2 .years{font-size:11px}
+.gen-1 .portrait{width:100px;height:100px}
+.gen-1 .nameplate{min-width:150px;max-width:175px;padding:10px 7px 8px}
+.gen-1 .name{font-size:18px;min-height:auto}
+.gen-1 .years{font-size:12px}
+.gen-0 .portrait{width:142px;height:142px;border-width:5px;outline-width:3px}
+.gen-0 .nameplate{min-width:210px;max-width:240px;padding:13px 12px 10px}
+.gen-0 .name{font-size:27px;min-height:auto;letter-spacing:1px}
+.gen-0 .years{font-size:16px}
+
+.bottom-foliage{
+  position:absolute;z-index:2;bottom:15px;left:420px;right:420px;height:100px;
+  background:
+   radial-gradient(ellipse at 10% 80%,rgba(72,104,65,.46) 0 8%,transparent 9%),
+   radial-gradient(ellipse at 25% 58%,rgba(91,126,76,.45) 0 9%,transparent 10%),
+   radial-gradient(ellipse at 40% 76%,rgba(72,104,65,.40) 0 10%,transparent 11%),
+   radial-gradient(ellipse at 60% 76%,rgba(72,104,65,.40) 0 10%,transparent 11%),
+   radial-gradient(ellipse at 75% 58%,rgba(91,126,76,.45) 0 9%,transparent 10%),
+   radial-gradient(ellipse at 90% 80%,rgba(72,104,65,.46) 0 8%,transparent 9%);
+  opacity:.65;
+}
+
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{border-right:0;border-bottom:1px solid #ddd7cd}
+  .workspace{padding:12px}
+}
+@media print{
+  @page{size:A3 landscape;margin:4mm}
+  body{background:#fff}
+  .sidebar,.toolbar{display:none}
+  .app{display:block}
+  .workspace{padding:0;overflow:visible}
+  .poster-wrap{min-width:0}
+  .poster{width:100%;height:auto;aspect-ratio:1.414/1;margin:0;box-shadow:none}
+  .person.active .portrait{outline:2px solid var(--gold)}
+}
 </style>
 </head>
 <body>
-<button class="preview-exit" id="previewExit">Tilbake til redigering</button>
-<div class="poster-controls" id="posterControls" aria-label="Kontroller for plakaten">
-  <button type="button" id="zoomOut" aria-label="Zoom ut">−</button>
-  <button type="button" id="zoomReset" aria-label="Tilpass plakaten">Tilpass</button>
-  <button type="button" id="zoomIn" aria-label="Zoom inn">+</button>
-</div>
 <div class="app">
 <aside class="sidebar">
-  <h1>Mitt Slektstre</h1>
-  <p class="lead">Registrer én person om gangen. Plakaten oppdateres automatisk.</p>
-  <div class="progress-head"><span id="stepText">Steg 1 av 31</span><span id="countText">0 registrert</span></div>
-  <div class="progress"><div id="progressBar"></div></div>
+  <div class="brand"><h1>Mitt Slektstre</h1><p>Registrer én person om gangen. Plakaten oppdateres automatisk.</p></div>
+  <div><div class="progress-top"><span id="progressText">Steg 1 av 31</span><span id="filledText">0 registrert</span></div><div class="progress"><div class="progress-bar" id="progressBar"></div></div></div>
 
-  <section class="editor">
-    <div class="kicker" id="generationLabel">Hovedperson</div>
-    <h2 id="relationLabel">Hovedperson</h2>
-    <p class="note" id="relationNote"></p>
-    <div class="preview" id="photoPreview">?</div>
+  <section class="step-card">
+    <div class="step-kicker" id="generationName">Hovedperson</div>
+    <h2 id="relationName">Hovedperson</h2>
+    <p class="relation-note" id="relationNote"></p>
+    <div class="photo-preview" id="photoPreview">?</div>
 
-    <div class="field">
-      <label for="name">Fullt navn</label>
-      <input id="name" type="text" placeholder="Skriv inn fullt navn">
-    </div>
+    <div class="field"><label for="fullName">Fullt navn</label><input id="fullName" type="text" placeholder="Skriv inn fullt navn"></div>
     <div class="row">
-      <div class="field"><label for="birth">Fødselsår</label><input id="birth" type="number" placeholder="ÅÅÅÅ"></div>
-      <div class="field"><label for="death">Dødsår</label><input id="death" type="number" placeholder="Valgfritt"></div>
+      <div class="field"><label for="birthYear">Fødselsår</label><input id="birthYear" type="number" min="1500" max="2100" placeholder="ÅÅÅÅ"></div>
+      <div class="field"><label for="deathYear">Dødsår</label><input id="deathYear" type="number" min="1500" max="2100" placeholder="Valgfritt"></div>
     </div>
 
     <div class="field">
       <label>Bilde</label>
-      <label class="file-btn" for="camera">Ta bilde med kamera</label>
-      <input class="hidden" id="camera" type="file" accept="image/*" capture="environment">
-      <label class="file-btn alt" style="margin-top:8px" for="gallery">Velg bilde fra enheten</label>
-      <input class="hidden" id="gallery" type="file" accept="image/*">
-      <div class="help">På mobil åpner den første knappen kameraet.</div>
+      <div class="photo-buttons">
+        <label class="file-button" for="cameraPhoto">Ta bilde med kamera</label>
+        <input id="cameraPhoto" class="hidden-file" type="file" accept="image/*" capture="environment">
+        <label class="file-button secondary-file" for="photo">Velg bilde fra enheten</label>
+        <input id="photo" class="hidden-file" type="file" accept="image/*">
+      </div>
+      <div class="camera-help">På mobil åpner den første knappen kameraet.</div>
     </div>
 
     <div class="buttons">
-      <button class="primary" id="saveNext">Lagre og gå videre</button>
-      <div class="button-row"><button class="secondary" id="prev">Forrige</button><button class="secondary" id="next">Neste</button></div>
-      <button class="ghost" id="removePhoto">Fjern bilde</button>
+      <button class="primary" id="saveNextBtn">Lagre og gå videre</button>
+      <div class="button-row"><button class="secondary" id="prevBtn">Forrige</button><button class="secondary" id="nextBtn">Neste</button></div>
+      <button class="ghost" id="removePhotoBtn">Fjern bilde</button>
     </div>
   </section>
 
-  <div class="jump">
-    <div class="field"><label for="personSelect">Gå direkte til en person</label><select id="personSelect"></select></div>
-  </div>
+  <div class="generation-jump"><label for="personSelect">Gå direkte til en person</label><select id="personSelect"></select></div>
 
   <div class="buttons">
-    <button class="primary" id="showPoster">Vis ferdig plakat</button>
-    <button class="secondary" id="printPoster">Skriv ut / lagre som PDF</button>
-    <button class="secondary" id="exportData">Eksporter sikkerhetskopi</button>
-    <label class="file-btn alt" for="importData">Importer sikkerhetskopi</label>
-    <input class="hidden" id="importData" type="file" accept=".json,application/json">
-    <button class="danger" id="resetAll">Nullstill hele treet</button>
+    <button class="secondary" id="printBtn">Skriv ut / lagre som PDF</button>
+    <button class="secondary" id="exportBtn">Eksporter sikkerhetskopi</button>
+    <label class="file-button secondary-file" for="importFile">Importer sikkerhetskopi</label>
+    <input id="importFile" class="hidden-file" type="file" accept=".json,application/json">
+    <button class="danger" id="resetBtn">Nullstill hele treet</button>
   </div>
-  <div class="info">Data og bilder lagres lokalt i nettleseren på denne enheten. Lag gjerne en sikkerhetskopi.</div>
+  <div class="summary">Opplysninger og bilder lagres lokalt i nettleseren. Eksporter en sikkerhetskopi før du bytter enhet eller sletter nettleserdata.</div>
 </aside>
 
 <main class="workspace">
-  <div class="toolbar">
-    <span>Klikk på en person i plakaten for å redigere.</span>
-    <div class="toolbar-actions">
-      <button class="primary" id="topShowPoster">Vis plakat</button>
-      <button class="secondary" id="topPrint">Lag PDF</button>
-    </div>
-  </div>
-
+  <div class="toolbar"><span>Klikk på en person i plakaten for å redigere.</span><button class="secondary" id="toolbarPrintBtn">Lag PDF</button></div>
   <div class="poster-wrap">
     <section class="poster" id="poster">
+      <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
       <h1 class="title" id="posterTitle">MITT SLEKTSTRE</h1>
       <div class="subtitle">Familien er der livet begynner</div>
-      <div class="ornament"></div>
-      <svg class="connections" id="connections"></svg>
-      <div class="tree" id="tree"></div>
-      <div class="legend"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#f3ddd7;border:1px solid #d9aaa1;vertical-align:-2px;margin-right:5px"></span>Mors side&nbsp;&nbsp;&nbsp;<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#dfe8f0;border:1px solid #aebfd0;vertical-align:-2px;margin-right:5px"></span>Fars side</div>
-      <div class="quote">«Familie er der livet begynner, og kjærligheten aldri tar slutt.»</div>
+      <div class="title-ornament"></div>
+
+      <div class="botanical-tree" aria-hidden="true">
+        <svg viewBox="0 0 1000 720">
+          <g fill="none" stroke="#557350" stroke-linecap="round">
+            <path d="M500 700 C475 610 485 525 500 430 C510 340 520 245 505 150" stroke-width="28" opacity=".48"/>
+            <path d="M500 590 C405 520 335 475 230 430" stroke-width="15"/>
+            <path d="M500 590 C595 520 665 475 770 430" stroke-width="15"/>
+            <path d="M485 475 C390 410 295 350 170 310" stroke-width="11"/>
+            <path d="M515 475 C610 410 705 350 830 310" stroke-width="11"/>
+            <path d="M500 355 C410 300 345 235 250 180" stroke-width="8"/>
+            <path d="M500 355 C590 300 655 235 750 180" stroke-width="8"/>
+          </g>
+          <g fill="#6f8f65">
+            <ellipse cx="210" cy="410" rx="44" ry="15" transform="rotate(-22 210 410)"/>
+            <ellipse cx="270" cy="445" rx="46" ry="16" transform="rotate(18 270 445)"/>
+            <ellipse cx="335" cy="485" rx="45" ry="15" transform="rotate(-18 335 485)"/>
+            <ellipse cx="790" cy="410" rx="44" ry="15" transform="rotate(22 790 410)"/>
+            <ellipse cx="730" cy="445" rx="46" ry="16" transform="rotate(-18 730 445)"/>
+            <ellipse cx="665" cy="485" rx="45" ry="15" transform="rotate(18 665 485)"/>
+            <ellipse cx="150" cy="290" rx="40" ry="14" transform="rotate(-18 150 290)"/>
+            <ellipse cx="250" cy="335" rx="40" ry="14" transform="rotate(25 250 335)"/>
+            <ellipse cx="850" cy="290" rx="40" ry="14" transform="rotate(18 850 290)"/>
+            <ellipse cx="750" cy="335" rx="40" ry="14" transform="rotate(-25 750 335)"/>
+            <ellipse cx="245" cy="170" rx="35" ry="12" transform="rotate(28 245 170)"/>
+            <ellipse cx="340" cy="245" rx="35" ry="12" transform="rotate(-28 340 245)"/>
+            <ellipse cx="755" cy="170" rx="35" ry="12" transform="rotate(-28 755 170)"/>
+            <ellipse cx="660" cy="245" rx="35" ry="12" transform="rotate(28 660 245)"/>
+          </g>
+        </svg>
+      </div>
+
+      <svg id="connections" aria-hidden="true"></svg>
+      <div id="tree"></div>
+      <div class="bottom-foliage"></div>
     </section>
   </div>
 </main>
 </div>
 
 <script>
-const STORAGE_KEY='mitt_slektstre_v4';
-const generations={
-  0:['Hovedperson'],
-  1:['Mor','Far'],
-  2:['Mormor','Morfar','Farmor','Farfar'],
-  3:['Mormors mor','Mormors far','Morfars mor','Morfars far','Farmors mor','Farmors far','Farfars mor','Farfars far'],
-  4:['Mormors mormor','Mormors morfar','Mormors farmor','Mormors farfar','Morfars mormor','Morfars morfar','Morfars farmor','Morfars farfar','Farmors mormor','Farmors morfar','Farmors farmor','Farmors farfar','Farfars mormor','Farfars morfar','Farfars farmor','Farfars farfar']
-};
+const KEY='mitt_slektstre_v2';
 const generationNames={0:'Hovedperson',1:'Foreldre',2:'Besteforeldre',3:'Oldeforeldre',4:'Tippoldeforeldre'};
+const labels=[
+ ['Hovedperson'],
+ ['Mor','Far'],
+ ['Mormor','Morfar','Farmor','Farfar'],
+ ['Mormors mor','Mormors far','Morfars mor','Morfars far','Farmors mor','Farmors far','Farfars mor','Farfars far'],
+ ['Mormors mormor','Mormors morfar','Mormors farmor','Mormors farfar','Morfars mormor','Morfars morfar','Morfars farmor','Morfars farfar','Farmors mormor','Farmors morfar','Farmors farmor','Farmors farfar','Farfars mormor','Farfars morfar','Farfars farmor','Farfars farfar']
+];
 const slots=[];
-Object.entries(generations).forEach(([g,arr])=>arr.forEach((label,index)=>slots.push({id:`g${g}_${index}`,generation:Number(g),index,label})));
+labels.forEach((arr,g)=>arr.forEach((label,i)=>slots.push({id:`g${g}_${i}`,generation:g,index:i,label})));
 
-let people={};
-try{people=JSON.parse(localStorage.getItem(STORAGE_KEY))||{}}catch{}
-let current=0;
-let pendingPhoto='';
+let data={};
+try{data=JSON.parse(localStorage.getItem(KEY))||{}}catch{}
+let currentIndex=0,pendingPhoto=null;
 
 const $=id=>document.getElementById(id);
-const currentSlot=()=>slots[current];
-const initials=name=>name?name.trim().split(/\s+/).slice(0,2).map(p=>p[0]?.toUpperCase()||'').join(''):'?';
-const firstName=name=>(name||'').trim().split(/\s+/)[0]||'Mitt';
+const fullName=$('fullName'),birthYear=$('birthYear'),deathYear=$('deathYear');
+const photo=$('photo'),cameraPhoto=$('cameraPhoto'),preview=$('photoPreview');
+const tree=$('tree'),select=$('personSelect'),importFile=$('importFile');
 
-function saveStorage(){localStorage.setItem(STORAGE_KEY,JSON.stringify(people))}
-function relationNote(s){
+const slot=()=>slots[currentIndex];
+const initials=n=>n?n.trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()||'').join(''):'?';
+const first=n=>(n||'').trim().split(/\s+/)[0]||'Mitt';
+
+function persist(){localStorage.setItem(KEY,JSON.stringify(data))}
+function relationText(s){
   if(s.generation===0)return'Start med personen slektstreet skal lages for.';
   if(s.generation===1)return`Registrer ${s.label.toLowerCase()} til hovedpersonen.`;
   return`Registrer ${s.label.toLowerCase()} i slektstreet.`;
 }
-function updatePhotoPreview(){
-  const box=$('photoPreview');box.innerHTML='';
-  if(pendingPhoto){const img=document.createElement('img');img.src=pendingPhoto;box.appendChild(img)}
-  else box.textContent=initials($('name').value);
+function renderPreview(){
+  preview.innerHTML='';
+  if(pendingPhoto){
+    const img=document.createElement('img');img.src=pendingPhoto;preview.appendChild(img);
+  }else preview.textContent=initials(fullName.value);
 }
-function fillSelect(){
-  const select=$('personSelect');select.innerHTML='';
+function populate(){
+  select.innerHTML='';
   for(let g=0;g<=4;g++){
     const group=document.createElement('optgroup');group.label=generationNames[g];
     slots.filter(s=>s.generation===g).forEach(s=>{
-      const option=document.createElement('option');
-      option.value=s.id;
-      option.textContent=people[s.id]?.name?`${s.label}: ${people[s.id].name}`:s.label;
-      group.appendChild(option);
+      const o=document.createElement('option');o.value=s.id;
+      o.textContent=data[s.id]?.name?`${s.label}: ${data[s.id].name}`:s.label;
+      group.appendChild(o);
     });
     select.appendChild(group);
   }
-  select.value=currentSlot().id;
+  select.value=slot().id;
 }
-function updateProgress(){
-  const count=slots.filter(s=>people[s.id]?.name).length;
-  $('stepText').textContent=`Steg ${current+1} av ${slots.length}`;
-  $('countText').textContent=`${count} registrert`;
-  $('progressBar').style.width=`${((current+1)/slots.length)*100}%`;
+function update(){
+  const filled=slots.filter(s=>data[s.id]?.name).length;
+  $('progressText').textContent=`Steg ${currentIndex+1} av ${slots.length}`;
+  $('filledText').textContent=`${filled} registrert`;
+  $('progressBar').style.width=`${((currentIndex+1)/slots.length)*100}%`;
 }
 function loadForm(){
-  const s=currentSlot(),p=people[s.id]||{};
-  pendingPhoto=p.photo||'';
-  $('generationLabel').textContent=generationNames[s.generation];
-  $('relationLabel').textContent=s.label;
-  $('relationNote').textContent=relationNote(s);
-  $('name').value=p.name||'';
-  $('birth').value=p.birth||'';
-  $('death').value=p.death||'';
-  updatePhotoPreview();
-  fillSelect();
-  updateProgress();
-  renderTree();
+  const s=slot(),p=data[s.id]||{};
+  pendingPhoto=p.photo||null;
+  $('generationName').textContent=generationNames[s.generation];
+  $('relationName').textContent=s.label;
+  $('relationNote').textContent=relationText(s);
+  fullName.value=p.name||'';birthYear.value=p.birthYear||'';deathYear.value=p.deathYear||'';
+  photo.value='';cameraPhoto.value='';
+  renderPreview();populate();update();renderTree();
 }
-function saveForm(){
-  people[currentSlot().id]={
-    name:$('name').value.trim(),
-    birth:$('birth').value.trim(),
-    death:$('death').value.trim(),
-    photo:pendingPhoto
-  };
-  saveStorage();
-  fillSelect();
-  updateProgress();
-  renderTree();
+function save(){
+  data[slot().id]={name:fullName.value.trim(),birthYear:birthYear.value.trim(),deathYear:deathYear.value.trim(),photo:pendingPhoto||''};
+  persist();populate();update();renderTree();
 }
-function move(step){
-  current=Math.max(0,Math.min(slots.length-1,current+step));
-  loadForm();
-  window.scrollTo({top:0,behavior:'smooth'});
+function move(n){
+  currentIndex=Math.max(0,Math.min(slots.length-1,currentIndex+n));
+  loadForm();window.scrollTo({top:0,behavior:'smooth'});
 }
-function compressImage(file,callback){
-  const reader=new FileReader();
-  reader.onload=e=>{
+function compress(file,cb){
+  const r=new FileReader();
+  r.onload=e=>{
     const img=new Image();
     img.onload=()=>{
-      const size=500,canvas=document.createElement('canvas');
-      canvas.width=canvas.height=size;
-      const ctx=canvas.getContext('2d');
-      const scale=Math.max(size/img.width,size/img.height);
+      const c=document.createElement('canvas'),size=400;
+      c.width=c.height=size;
+      const ctx=c.getContext('2d'),scale=Math.max(size/img.width,size/img.height);
       const w=img.width*scale,h=img.height*scale;
       ctx.drawImage(img,(size-w)/2,(size-h)/2,w,h);
-      callback(canvas.toDataURL('image/jpeg',.86));
+      cb(c.toDataURL('image/jpeg',.84));
     };
     img.src=e.target.result;
   };
-  reader.readAsDataURL(file);
-}
-function useImage(file){
-  if(!file)return;
-  compressImage(file,data=>{pendingPhoto=data;updatePhotoPreview()});
+  r.readAsDataURL(file);
 }
 function renderTree(){
-  const tree=$('tree');tree.innerHTML='';
+  tree.innerHTML='';
   for(let g=4;g>=0;g--){
-    const row=document.createElement('div');row.className=`gen g${g}`;
+    const row=document.createElement('div');
+    row.className=`generation gen-${g}`;
     slots.filter(s=>s.generation===g).forEach(s=>{
-      const p=people[s.id]||{};
+      const p=data[s.id]||{};
       const card=document.createElement('div');
-      const sideClass=s.generation===0?'main-person':(s.index<Math.pow(2,s.generation-1)?'maternal':'paternal');
-      card.className=`person ${sideClass} ${s.id===currentSlot().id?'active':''}`;
+      card.className=`person ${s.id===slot().id?'active':''}`;
       card.dataset.slot=s.id;
 
-      const shell=document.createElement('div');shell.className='card-shell';
       if(p.photo){
-        const img=document.createElement('img');
-        img.className='portrait';img.src=p.photo;img.alt=p.name||s.label;
-        shell.appendChild(img);
+        const img=document.createElement('img');img.className='portrait';img.src=p.photo;img.alt=p.name||s.label;card.appendChild(img);
       }else{
-        const ph=document.createElement('div');
-        ph.className='portrait';ph.textContent=initials(p.name);
-        shell.appendChild(ph);
+        const ph=document.createElement('div');ph.className='portrait';ph.textContent=initials(p.name);card.appendChild(ph);
       }
 
-      const plate=document.createElement('div');plate.className='plate';
-      const name=document.createElement('div');name.className='pname';name.textContent=p.name||s.label;
-      const years=document.createElement('div');years.className='years';
-      years.textContent=p.birth?(p.death?`${p.birth}–${p.death}`:`${p.birth}–`):'';
-      plate.append(name,years);shell.appendChild(plate);card.appendChild(shell);
+      const plate=document.createElement('div');plate.className='nameplate';
+      const n=document.createElement('div');n.className='name';n.textContent=p.name||s.label;plate.appendChild(n);
+      const y=document.createElement('div');y.className='years';
+      y.textContent=p.birthYear?(p.deathYear?`${p.birthYear}–${p.deathYear}`:`${p.birthYear}–`):'';
+      plate.appendChild(y);card.appendChild(plate);
 
-      card.addEventListener('click',()=>{
-        current=slots.findIndex(x=>x.id===s.id);
-        loadForm();
-      });
+      card.addEventListener('click',()=>{currentIndex=slots.findIndex(x=>x.id===s.id);loadForm()});
       row.appendChild(card);
     });
     tree.appendChild(row);
   }
-  const main=people.g0_0;
-  $('posterTitle').textContent=main?.name?`${firstName(main.name).toUpperCase()}S SLEKTSTRE`:'MITT SLEKTSTRE';
+  const main=data['g0_0'];
+  $('posterTitle').textContent=main?.name?`${first(main.name).toUpperCase()}S SLEKTSTRE`:'MITT SLEKTSTRE';
   requestAnimationFrame(drawConnections);
 }
 function drawConnections(){
-  const svg=$('connections'),poster=$('poster'),pr=poster.getBoundingClientRect();
+  const svg=$('connections'),poster=$('poster');
   svg.innerHTML='';
+  const pr=poster.getBoundingClientRect();
   svg.setAttribute('viewBox',`0 0 ${pr.width} ${pr.height}`);
-  const NS='http://www.w3.org/2000/svg';
-  const point=(id,edge)=>{
+
+  function point(id,top){
     const el=poster.querySelector(`[data-slot="${id}"]`);
     if(!el)return null;
     const r=el.getBoundingClientRect();
-    return {
-      x:r.left-pr.left+r.width/2,
-      y:(edge==='top'?r.top:edge==='middle'?r.top+r.height/2:r.bottom)-pr.top
-    };
-  };
-  const path=(d,width=1.45,opacity=.62)=>{
-    const p=document.createElementNS(NS,'path');
-    p.setAttribute('d',d);p.setAttribute('fill','none');
-    p.setAttribute('stroke','#8d7654');p.setAttribute('stroke-width',width);
-    p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round');
-    p.setAttribute('opacity',opacity);svg.appendChild(p);
-  };
+    return {x:r.left-pr.left+r.width/2,y:(top?r.top:r.bottom)-pr.top};
+  }
+  function addPath(a,b){
+    if(!a||!b)return;
+    const mid=(a.y+b.y)/2;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M ${a.x} ${a.y} C ${a.x} ${mid}, ${b.x} ${mid}, ${b.x} ${b.y}`);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','#8a6a34');
+    path.setAttribute('stroke-width','2.2');
+    path.setAttribute('stroke-linecap','round');
+    path.setAttribute('opacity','.82');
+    svg.appendChild(path);
+  }
   for(let g=0;g<4;g++){
-    slots.filter(s=>s.generation===g).forEach(child=>{
-      const childTop=point(child.id,'top');
-      const left=point(`g${g+1}_${child.index*2}`,'bottom');
-      const right=point(`g${g+1}_${child.index*2+1}`,'bottom');
-      if(!childTop||!left||!right)return;
-      const coupleY=Math.max(left.y,right.y)+20;
-      const midX=(left.x+right.x)/2;
-      const joinY=childTop.y-20;
-      // Rene, rette forbindelseslinjer: ned, inn mot midten og videre til barnet.
-      path(`M ${left.x} ${left.y} V ${coupleY} H ${midX}`);
-      path(`M ${right.x} ${right.y} V ${coupleY} H ${midX}`);
-      path(`M ${midX} ${coupleY} V ${joinY} H ${childTop.x} V ${childTop.y}`,1.45,.64);
+    const children=slots.filter(s=>s.generation===g);
+    children.forEach(child=>{
+      const childTop=point(child.id,true);
+      const p1=`g${g+1}_${child.index*2}`;
+      const p2=`g${g+1}_${child.index*2+1}`;
+      addPath(childTop,point(p1,false));
+      addPath(childTop,point(p2,false));
     });
   }
 }
-const posterView={
-  scale:1,
-  minScale:.1,
-  maxScale:2,
-  x:0,
-  y:0,
-  dragging:false,
-  lastX:0,
-  lastY:0,
-  pinchDistance:0,
-  pinchScale:1,
-  lastTap:0
-};
-
-function isMobileView(){
-  return window.matchMedia('(max-width:900px)').matches;
-}
-function posterElements(){
-  return {
-    poster:$('poster'),
-    wrap:document.querySelector('.poster-wrap')
-  };
-}
-function clampPosterPosition(){
-  const {poster,wrap}=posterElements();
-  if(!poster||!wrap)return;
-  const w=poster.offsetWidth*posterView.scale;
-  const h=poster.offsetHeight*posterView.scale;
-  const vw=wrap.clientWidth;
-  const vh=wrap.clientHeight;
-
-  if(w<=vw) posterView.x=(vw-w)/2;
-  else posterView.x=Math.min(0,Math.max(vw-w,posterView.x));
-
-  if(h<=vh) posterView.y=(vh-h)/2;
-  else posterView.y=Math.min(0,Math.max(vh-h,posterView.y));
-}
-function applyPosterTransform(){
-  const {poster}=posterElements();
-  if(!poster)return;
-  clampPosterPosition();
-  poster.style.transform=`translate(${posterView.x}px,${posterView.y}px) scale(${posterView.scale})`;
-  requestAnimationFrame(drawConnections);
-}
-function fitPoster(){
-  const {poster,wrap}=posterElements();
-  if(!poster||!wrap)return;
-
-  if(!document.body.classList.contains('preview-mode')){
-    poster.style.transform='';
-    wrap.style.height='';
-    return;
-  }
-
-  const padding=isMobileView()?8:24;
-  const availableW=Math.max(1,wrap.clientWidth-padding*2);
-  const availableH=Math.max(1,wrap.clientHeight-padding*2);
-
-  if(isMobileView()){
-    posterView.minScale=Math.min(availableW/poster.offsetWidth,availableH/poster.offsetHeight);
-    posterView.scale=availableW/poster.offsetWidth;
-    posterView.x=(wrap.clientWidth-poster.offsetWidth*posterView.scale)/2;
-    posterView.y=8;
-  }else{
-    posterView.minScale=Math.min(availableW/poster.offsetWidth,availableH/poster.offsetHeight);
-    posterView.scale=posterView.minScale;
-    posterView.x=(wrap.clientWidth-poster.offsetWidth*posterView.scale)/2;
-    posterView.y=(wrap.clientHeight-poster.offsetHeight*posterView.scale)/2;
-  }
-  applyPosterTransform();
-}
-function zoomPoster(factor,centerX,centerY){
-  const {wrap}=posterElements();
-  if(!wrap)return;
-  const rect=wrap.getBoundingClientRect();
-  const cx=(centerX??(rect.left+rect.width/2))-rect.left;
-  const cy=(centerY??(rect.top+rect.height/2))-rect.top;
-  const oldScale=posterView.scale;
-  const newScale=Math.min(posterView.maxScale,Math.max(posterView.minScale,oldScale*factor));
-  if(newScale===oldScale)return;
-
-  const posterPointX=(cx-posterView.x)/oldScale;
-  const posterPointY=(cy-posterView.y)/oldScale;
-  posterView.scale=newScale;
-  posterView.x=cx-posterPointX*newScale;
-  posterView.y=cy-posterPointY*newScale;
-  applyPosterTransform();
-}
-function openPoster(){
-  saveForm();
-  document.body.classList.add('preview-mode');
-  window.scrollTo(0,0);
-  requestAnimationFrame(()=>requestAnimationFrame(fitPoster));
-}
-function closePoster(){
-  document.body.classList.remove('preview-mode');
-  const {poster}=posterElements();
-  poster.style.transform='';
-  posterView.dragging=false;
-  requestAnimationFrame(drawConnections);
-}
-function touchDistance(touches){
-  const dx=touches[0].clientX-touches[1].clientX;
-  const dy=touches[0].clientY-touches[1].clientY;
-  return Math.hypot(dx,dy);
-}
-function touchCenter(touches){
-  return {
-    x:(touches[0].clientX+touches[1].clientX)/2,
-    y:(touches[0].clientY+touches[1].clientY)/2
-  };
-}
-function setupPosterInteractions(){
-  const {wrap}=posterElements();
-  if(!wrap)return;
-
-  wrap.addEventListener('pointerdown',event=>{
-    if(!document.body.classList.contains('preview-mode')||event.pointerType==='touch')return;
-    posterView.dragging=true;
-    posterView.lastX=event.clientX;
-    posterView.lastY=event.clientY;
-    wrap.classList.add('dragging');
-    wrap.setPointerCapture?.(event.pointerId);
-  });
-  wrap.addEventListener('pointermove',event=>{
-    if(!posterView.dragging||event.pointerType==='touch')return;
-    posterView.x+=event.clientX-posterView.lastX;
-    posterView.y+=event.clientY-posterView.lastY;
-    posterView.lastX=event.clientX;
-    posterView.lastY=event.clientY;
-    applyPosterTransform();
-  });
-  const endPointer=()=>{
-    posterView.dragging=false;
-    wrap.classList.remove('dragging');
-  };
-  wrap.addEventListener('pointerup',endPointer);
-  wrap.addEventListener('pointercancel',endPointer);
-
-  wrap.addEventListener('wheel',event=>{
-    if(!document.body.classList.contains('preview-mode'))return;
-    event.preventDefault();
-    zoomPoster(event.deltaY<0?1.12:.89,event.clientX,event.clientY);
-  },{passive:false});
-
-  wrap.addEventListener('touchstart',event=>{
-    if(!document.body.classList.contains('preview-mode'))return;
-    event.preventDefault();
-    if(event.touches.length===1){
-      posterView.dragging=true;
-      posterView.lastX=event.touches[0].clientX;
-      posterView.lastY=event.touches[0].clientY;
-    }else if(event.touches.length===2){
-      posterView.dragging=false;
-      posterView.pinchDistance=touchDistance(event.touches);
-      posterView.pinchScale=posterView.scale;
-    }
-  },{passive:false});
-
-  wrap.addEventListener('touchmove',event=>{
-    if(!document.body.classList.contains('preview-mode'))return;
-    event.preventDefault();
-    if(event.touches.length===1&&posterView.dragging){
-      const t=event.touches[0];
-      posterView.x+=t.clientX-posterView.lastX;
-      posterView.y+=t.clientY-posterView.lastY;
-      posterView.lastX=t.clientX;
-      posterView.lastY=t.clientY;
-      applyPosterTransform();
-    }else if(event.touches.length===2){
-      const distance=touchDistance(event.touches);
-      const center=touchCenter(event.touches);
-      const target=posterView.pinchScale*(distance/posterView.pinchDistance);
-      const factor=target/posterView.scale;
-      zoomPoster(factor,center.x,center.y);
-    }
-  },{passive:false});
-
-  wrap.addEventListener('touchend',event=>{
-    posterView.dragging=false;
-    if(event.touches.length<2)posterView.pinchDistance=0;
-  },{passive:false});
-
-  wrap.addEventListener('dblclick',event=>{
-    if(!document.body.classList.contains('preview-mode'))return;
-    if(posterView.scale>posterView.minScale*1.7)fitPoster();
-    else zoomPoster(2,event.clientX,event.clientY);
-  });
-}
-
 function exportBackup(){
-  saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 3.0',people},null,2)],{type:'application/json'});
+  save();
+  const backup={app:'Mitt Slektstre',formatVersion:1,exportedAt:new Date().toISOString(),people:data};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json;charset=utf-8'});
+  const main=data['g0_0']?.name||'slektstre';
+  const safe=main.trim().toLowerCase().replace(/æ/g,'ae').replace(/ø/g,'o').replace(/å/g,'a').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'slektstre';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='slektstre-sikkerhetskopi.json';
-  a.click();
+  a.download=`${safe}-sikkerhetskopi-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function importBackup(file){
   if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
+  const r=new FileReader();
+  r.onload=e=>{
     try{
-      const obj=JSON.parse(e.target.result);
-      if(!obj.people)throw new Error();
-      if(confirm('Dette erstatter dataene som ligger på denne enheten. Fortsette?')){
-        people=obj.people;
-        saveStorage();
-        current=0;
-        loadForm();
-      }
+      const b=JSON.parse(e.target.result);
+      if(!b||b.app!=='Mitt Slektstre'||!b.people||typeof b.people!=='object')throw new Error('invalid');
+      if(!confirm('Import vil erstatte slektstreet som ligger på denne enheten. Vil du fortsette?')){importFile.value='';return}
+      data=b.people;persist();currentIndex=0;pendingPhoto=null;importFile.value='';loadForm();
+      alert('Sikkerhetskopien er importert.');
     }catch{
-      alert('Kunne ikke lese sikkerhetskopien.');
+      alert('Kunne ikke lese sikkerhetskopien. Velg en gyldig fil fra Mitt Slektstre.');
+      importFile.value='';
     }
   };
-  reader.readAsText(file);
+  r.onerror=()=>alert('Filen kunne ikke leses.');
+  r.readAsText(file,'utf-8');
+}
+function handleImage(file){
+  if(!file)return;
+  if(!file.type.startsWith('image/')){alert('Filen må være et bilde.');return}
+  compress(file,x=>{pendingPhoto=x;renderPreview()});
 }
 
-$('saveNext').onclick=()=>{saveForm();if(current<slots.length-1)move(1)};
-$('prev').onclick=()=>{saveForm();move(-1)};
-$('next').onclick=()=>{saveForm();move(1)};
-$('removePhoto').onclick=()=>{pendingPhoto='';updatePhotoPreview()};
-$('camera').onchange=e=>useImage(e.target.files[0]);
-$('gallery').onchange=e=>useImage(e.target.files[0]);
-$('name').oninput=updatePhotoPreview;
-$('personSelect').onchange=e=>{saveForm();current=slots.findIndex(s=>s.id===e.target.value);loadForm()};
-$('showPoster').onclick=openPoster;
-$('topShowPoster').onclick=openPoster;
-$('previewExit').onclick=closePoster;
-$('zoomIn').onclick=()=>zoomPoster(1.25);
-$('zoomOut').onclick=()=>zoomPoster(.8);
-$('zoomReset').onclick=()=>{
-  const {poster,wrap}=posterElements();
-  if(!poster||!wrap)return;
-  const padding=8;
-  posterView.minScale=(wrap.clientWidth-padding*2)/poster.offsetWidth;
-  posterView.scale=posterView.minScale;
-  posterView.x=(wrap.clientWidth-poster.offsetWidth*posterView.scale)/2;
-  posterView.y=(wrap.clientHeight-poster.offsetHeight*posterView.scale)/2;
-  applyPosterTransform();
-};
-$('printPoster').onclick=()=>{saveForm();setTimeout(()=>window.print(),100)};
-$('topPrint').onclick=()=>{saveForm();setTimeout(()=>window.print(),100)};
-$('exportData').onclick=exportBackup;
-$('importData').onchange=e=>importBackup(e.target.files[0]);
-$('resetAll').onclick=()=>{
-  if(confirm('Vil du slette alle personer og bilder?')){
-    people={};saveStorage();current=0;pendingPhoto='';loadForm();
-  }
-};
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePoster()});
-window.addEventListener('resize',()=>{requestAnimationFrame(drawConnections);if(document.body.classList.contains('preview-mode'))requestAnimationFrame(fitPoster)});
-setupPosterInteractions();
+$('saveNextBtn').addEventListener('click',()=>{save();if(currentIndex<slots.length-1)move(1)});
+$('prevBtn').addEventListener('click',()=>{save();move(-1)});
+$('nextBtn').addEventListener('click',()=>{save();move(1)});
+$('removePhotoBtn').addEventListener('click',()=>{pendingPhoto=null;renderPreview()});
+photo.addEventListener('change',()=>handleImage(photo.files[0]));
+cameraPhoto.addEventListener('change',()=>handleImage(cameraPhoto.files[0]));
+fullName.addEventListener('input',renderPreview);
+select.addEventListener('change',()=>{save();currentIndex=slots.findIndex(s=>s.id===select.value);loadForm()});
+$('printBtn').addEventListener('click',()=>{save();drawConnections();setTimeout(()=>window.print(),80)});
+$('toolbarPrintBtn').addEventListener('click',()=>{save();drawConnections();setTimeout(()=>window.print(),80)});
+$('exportBtn').addEventListener('click',exportBackup);
+importFile.addEventListener('change',()=>importBackup(importFile.files[0]));
+$('resetBtn').addEventListener('click',()=>{if(confirm('Vil du slette alle registrerte personer og bilder?')){data={};currentIndex=0;pendingPhoto=null;persist();loadForm()}});
+window.addEventListener('resize',()=>requestAnimationFrame(drawConnections));
+
 loadForm();
 </script>
 </body>
