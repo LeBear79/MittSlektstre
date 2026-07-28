@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 3.0</title>
+<title>Mitt Slektstre 3.0 – rettet hovedpersonkort</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -48,7 +48,7 @@ button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;te
 .g3 .person{width:112px}.g3 .card-shell{height:150px}.g3 .portrait{width:68px;height:68px}.g3 .pname{font-size:12px}.g3 .years{font-size:9px}
 .g2 .person{width:146px}.g2 .card-shell{height:174px;padding-top:12px}.g2 .portrait{width:86px;height:86px}.g2 .pname{font-size:14px}.g2 .years{font-size:10px}
 .g1 .person{width:172px}.g1 .card-shell{height:180px;padding-top:12px}.g1 .portrait{width:96px;height:96px}.g1 .pname{font-size:16px}.g1 .years{font-size:11px}
-.g0 .person{width:210px}.g0 .card-shell{height:176px;padding:10px 10px 9px}.g0 .portrait{width:104px;height:104px;outline-color:#7f9a69}.g0 .pname{font-size:20px;white-space:normal}.g0 .years{font-size:12px}
+.g0 .person{width:210px}/* Hovedpersonkortet får nok høyde til bilde, navn på to linjer og årstall. */.g0 .card-shell{height:auto;min-height:194px;padding:10px 10px 12px}.g0 .portrait{width:104px;height:104px;outline-color:#7f9a69;flex:0 0 auto}.g0 .plate{display:flex;flex-direction:column;align-items:center;width:100%}.g0 .pname{font-size:20px;line-height:1.05;white-space:normal;margin:0}.g0 .years{font-size:12px;line-height:1.2;margin-top:4px;position:static}
 .legend{position:absolute;left:56px;bottom:14px;font-size:12px;color:#5a5145;z-index:8}.quote{display:none}
 .preview-exit{display:none;position:fixed;right:12px;top:12px;z-index:1002;background:#fff;color:var(--green);border:1px solid #d5cec2;box-shadow:0 3px 12px rgba(0,0,0,.15);font-size:15px}.poster-controls{display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:1002;background:rgba(255,255,255,.96);padding:6px;border-radius:12px;box-shadow:0 3px 15px rgba(0,0,0,.2);gap:5px}.poster-controls button{min-width:46px;padding:9px 12px;border-radius:8px;background:#ece8e0;color:#2f4835}.poster-controls #zoomReset{min-width:82px}
 body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,body.preview-mode .toolbar{display:none}body.preview-mode .app{display:block}body.preview-mode .workspace{position:fixed;inset:0;padding:0;overflow:hidden;background:#d9d5ce;z-index:999}body.preview-mode .poster-wrap{position:absolute;inset:0;min-width:0;width:100%;height:100%!important;overflow:hidden;display:block;touch-action:none;cursor:grab}body.preview-mode .poster-wrap.dragging{cursor:grabbing}body.preview-mode .poster{position:absolute;left:0;top:0;margin:0;transform-origin:0 0;will-change:transform;user-select:none}body.preview-mode .preview-exit{display:block}body.preview-mode .poster-controls{display:flex}
