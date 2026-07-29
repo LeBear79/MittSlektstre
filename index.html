@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- Mitt Slektstre 4.1: rettede forbindelseslinjer, klikkredigering og justert ramme -->
+<!-- Mitt Slektstre 4.2: felles 32-kolonne rutenett og symmetriske forbindelseslinjer -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 4.1</title>
+<title>Mitt Slektstre 4.2</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -96,12 +96,20 @@ button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;te
 .title{position:absolute;top:34px;left:0;right:0;text-align:center;font:500 50px Georgia,"Times New Roman",serif;letter-spacing:4px;margin:0;z-index:8;color:#263c2d}.subtitle{position:absolute;top:105px;left:0;right:0;text-align:center;letter-spacing:4px;text-transform:uppercase;font-size:11px;z-index:8;color:#575147}.ornament{position:absolute;top:136px;left:570px;right:570px;border-top:1px solid rgba(109,84,40,.38);z-index:8}
 .connections{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible}
 .tree{position:absolute;left:34px;right:34px;top:148px;bottom:28px;z-index:4}
-.gen{position:absolute;left:0;right:0;display:grid;justify-content:center;justify-items:center;align-items:start}
-.g4{top:0;grid-template-columns:repeat(16,78px);column-gap:8px}
-.g3{top:146px;grid-template-columns:repeat(8,112px);column-gap:48px}
-.g2{top:316px;grid-template-columns:repeat(4,146px);column-gap:170px}
-.g1{top:510px;grid-template-columns:repeat(2,172px);column-gap:520px}
-.g0{top:696px;display:flex;justify-content:center}
+.gen{
+  position:absolute;
+  left:0;
+  right:0;
+  display:grid;
+  grid-template-columns:repeat(32,minmax(0,1fr));
+  justify-items:center;
+  align-items:start;
+}
+.g4{top:0}
+.g3{top:146px}
+.g2{top:316px}
+.g1{top:510px}
+.g0{top:696px}
 .person{position:relative;text-align:center;cursor:pointer;filter:drop-shadow(0 2px 2px rgba(40,30,15,.06));touch-action:manipulation}
 .person:hover .card-shell{transform:translateY(-2px);box-shadow:0 5px 12px rgba(64,48,25,.12)}
 .person:focus-visible{outline:3px solid rgba(56,91,67,.35);outline-offset:4px;border-radius:10px}.person.active .card-shell{box-shadow:0 0 0 4px rgba(56,91,67,.17)}
@@ -114,7 +122,7 @@ button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;te
 .g2 .person{width:146px}.g2 .card-shell{height:174px;padding-top:12px}.g2 .portrait{width:86px;height:86px}.g2 .pname{font-size:14px}.g2 .years{font-size:10px}
 .g1 .person{width:172px}.g1 .card-shell{height:180px;padding-top:12px}.g1 .portrait{width:96px;height:96px}.g1 .pname{font-size:16px}.g1 .years{font-size:11px}
 .g0 .person{width:210px}/* Hovedpersonkortet får nok høyde til bilde, navn på to linjer og årstall. */.g0 .card-shell{height:auto;min-height:194px;padding:10px 10px 12px}.g0 .portrait{width:104px;height:104px;outline-color:#7f9a69;flex:0 0 auto}.g0 .plate{display:flex;flex-direction:column;align-items:center;width:100%}.g0 .pname{font-size:20px;line-height:1.05;white-space:normal;margin:0}.g0 .years{font-size:12px;line-height:1.2;margin-top:4px;position:static}
-.legend{position:absolute;left:56px;bottom:14px;font-size:12px;color:#5a5145;z-index:8}.quote{display:none}
+.quote{display:none}
 .preview-exit{display:none;position:fixed;right:12px;top:12px;z-index:1002;background:#fff;color:var(--green);border:1px solid #d5cec2;box-shadow:0 3px 12px rgba(0,0,0,.15);font-size:15px}.poster-controls{display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:1002;background:rgba(255,255,255,.96);padding:6px;border-radius:12px;box-shadow:0 3px 15px rgba(0,0,0,.2);gap:5px}.poster-controls button{min-width:46px;padding:9px 12px;border-radius:8px;background:#ece8e0;color:#2f4835}
 .poster-controls #zoomReset{min-width:82px}
 .export-status{display:none;position:fixed;inset:0;z-index:2000;background:rgba(25,24,21,.62);align-items:center;justify-content:center;padding:20px}
@@ -146,7 +154,6 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
   }
   .tree{top:148px;bottom:28px}
   .g0{top:696px}
-  .legend{bottom:12px}
 }
 </style>
 </head>
@@ -218,6 +225,7 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
 </aside>
 
 <main class="workspace">
+  <!-- Verktøylinjen ligger utenfor #poster og kommer derfor ikke med på PNG eller utskrift. -->
   <div class="toolbar">
     <span>Klikk på en person i plakaten for å redigere.</span>
     <div class="toolbar-actions">
@@ -307,7 +315,6 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
       <div class="ornament"></div>
       <svg class="connections" id="connections"></svg>
       <div class="tree" id="tree"></div>
-      <div class="legend"><span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#f3ddd7;border:1px solid #d9aaa1;vertical-align:-2px;margin-right:5px"></span>Mors side&nbsp;&nbsp;&nbsp;<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:#dfe8f0;border:1px solid #aebfd0;vertical-align:-2px;margin-right:5px"></span>Fars side</div>
       <div class="quote">«Familie er der livet begynner, og kjærligheten aldri tar slutt.»</div>
     </section>
   </div>
@@ -430,6 +437,13 @@ function renderTree(){
       const sideClass=s.generation===0?'main-person':(s.index<Math.pow(2,s.generation-1)?'maternal':'paternal');
       card.className=`person ${sideClass} ${s.id===currentSlot().id?'active':''}`;
       card.dataset.slot=s.id;
+
+      // Alle generasjoner bruker det samme 32-kolonne-rutenettet.
+      // Dermed står hvert barn matematisk midt mellom sine to foreldre.
+      const columnSpan=32/Math.pow(2,s.generation);
+      const columnStart=s.index*columnSpan+1;
+      card.style.gridColumn=`${columnStart} / span ${columnSpan}`;
+
       card.tabIndex=0;
       card.setAttribute('role','button');
       card.setAttribute('aria-label',`Rediger ${p.name||s.label}`);
@@ -481,8 +495,8 @@ function drawConnections(){
   const svg=$('connections');
   const poster=$('poster');
   const pr=poster.getBoundingClientRect();
-  const posterScaleX=pr.width/poster.offsetWidth;
-  const posterScaleY=pr.height/poster.offsetHeight;
+  const scaleX=pr.width/poster.offsetWidth;
+  const scaleY=pr.height/poster.offsetHeight;
 
   svg.innerHTML='';
   svg.setAttribute('viewBox',`0 0 ${poster.offsetWidth} ${poster.offsetHeight}`);
@@ -494,55 +508,55 @@ function drawConnections(){
     const el=poster.querySelector(`[data-slot="${id}"]`);
     if(!el)return null;
     const r=el.getBoundingClientRect();
-    const left=(r.left-pr.left)/posterScaleX;
-    const top=(r.top-pr.top)/posterScaleY;
-    const width=r.width/posterScaleX;
-    const height=r.height/posterScaleY;
+    const left=(r.left-pr.left)/scaleX;
+    const top=(r.top-pr.top)/scaleY;
+    const width=r.width/scaleX;
+    const height=r.height/scaleY;
 
     return {
       x:crisp(left+width/2),
-      y:crisp(edge==='top'?top:edge==='middle'?top+height/2:top+height)
+      y:crisp(edge==='top'?top:top+height)
     };
   };
 
-  const path=(d,width=1.5,opacity=.68)=>{
+  const addPath=d=>{
     const p=document.createElementNS(NS,'path');
     p.setAttribute('d',d);
     p.setAttribute('fill','none');
     p.setAttribute('stroke','#8d7654');
-    p.setAttribute('stroke-width',width);
+    p.setAttribute('stroke-width','1.5');
     p.setAttribute('vector-effect','non-scaling-stroke');
     p.setAttribute('stroke-linecap','square');
     p.setAttribute('stroke-linejoin','miter');
-    p.setAttribute('opacity',opacity);
+    p.setAttribute('opacity','.7');
     svg.appendChild(p);
   };
 
-  for(let g=0;g<4;g++){
-    const children=slots.filter(s=>s.generation===g);
-    const parentBottoms=slots
-      .filter(s=>s.generation===g+1)
-      .map(s=>point(s.id,'bottom'))
-      .filter(Boolean);
-    const childTops=children.map(s=>point(s.id,'top')).filter(Boolean);
-
-    if(!parentBottoms.length||!childTops.length)continue;
-
-    // Samme høyde for alle koblinger i samme generasjon gir et roligere uttrykk.
-    const coupleY=crisp(Math.max(...parentBottoms.map(p=>p.y))+20);
-    const joinY=crisp(Math.min(...childTops.map(p=>p.y))-20);
+  for(let generation=0;generation<4;generation++){
+    const children=slots.filter(s=>s.generation===generation);
 
     children.forEach(child=>{
       const childTop=point(child.id,'top');
-      const left=point(`g${g+1}_${child.index*2}`,'bottom');
-      const right=point(`g${g+1}_${child.index*2+1}`,'bottom');
-      if(!childTop||!left||!right)return;
+      const leftParent=point(`g${generation+1}_${child.index*2}`,'bottom');
+      const rightParent=point(`g${generation+1}_${child.index*2+1}`,'bottom');
+      if(!childTop||!leftParent||!rightParent)return;
 
-      const midX=crisp((left.x+right.x)/2);
+      const parentLineY=crisp(Math.max(leftParent.y,rightParent.y)+20);
+      const childJoinY=crisp(childTop.y-20);
+      const familyCenterX=crisp((leftParent.x+rightParent.x)/2);
 
-      path(`M ${left.x} ${left.y} V ${coupleY} H ${midX}`);
-      path(`M ${right.x} ${right.y} V ${coupleY} H ${midX}`);
-      path(`M ${midX} ${coupleY} V ${joinY} H ${childTop.x} V ${childTop.y}`);
+      // Én lukket og symmetrisk forbindelse for hver familie:
+      // ned fra foreldrene, vannrett mellom dem og deretter midt ned til barnet.
+      addPath(
+        `M ${leftParent.x} ${leftParent.y}` +
+        ` V ${parentLineY}` +
+        ` H ${rightParent.x}` +
+        ` V ${rightParent.y}` +
+        ` M ${familyCenterX} ${parentLineY}` +
+        ` V ${childJoinY}` +
+        ` H ${childTop.x}` +
+        ` V ${childTop.y}`
+      );
     });
   }
 }
@@ -818,7 +832,7 @@ async function downloadPosterImage(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 4.1',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 4.2',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
