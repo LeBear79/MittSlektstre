@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- Mitt Slektstre 5.4: utvidet personinformasjon og detaljvisning -->
+<!-- Mitt Slektstre 5.4.1: synlige personopplysninger og versjonsmerke -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 5.4</title>
+<title>Mitt Slektstre 5.4.1</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -260,7 +260,7 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
 </div>
 <div class="app">
 <aside class="sidebar">
-  <h1>Mitt Slektstre</h1>
+  <h1>Mitt Slektstre</h1><div class="version-badge">Versjon 5.4.1</div>
   <p class="lead">Registrer én person om gangen. Plakaten oppdateres automatisk.</p>
   <div class="progress-head"><span id="stepText">Steg 1 av 31</span><span id="countText">0 registrert</span></div>
   <div class="progress"><div id="progressBar"></div></div>
@@ -280,7 +280,7 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
       <div class="field"><label for="death">Dødsår</label><input id="death" type="number" placeholder="Valgfritt"></div>
     </div>
 
-    <details class="more-details">
+    <details class="more-details" open>
       <summary>Flere opplysninger</summary>
 
       <div class="row">
@@ -1085,7 +1085,7 @@ async function downloadPosterImage(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.4',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.4.1',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
