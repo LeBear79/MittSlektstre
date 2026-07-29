@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- Mitt Slektstre 4.0: dekorativ plakatbakgrunn, forbedret utskrift og PNG -->
+<!-- Mitt Slektstre 4.1: rettede forbindelseslinjer, klikkredigering og justert ramme -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 4.0</title>
+<title>Mitt Slektstre 4.1</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -28,8 +28,8 @@ button,input,select{font:inherit} button{cursor:pointer}
 button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;text-align:center;display:block}.primary{background:var(--green);color:#fff}.secondary{background:#ece9e3;color:#352f28}.ghost{background:#faf8f4;border:1px solid #ddd6cb;color:#4a443c}.danger{background:#f4dddd;color:#8b3333}.file-btn{background:var(--green);color:#fff;cursor:pointer}.file-btn.alt{background:#ece9e3;color:#352f28}.hidden{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}.help{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}.jump{margin-top:16px;padding-top:15px;border-top:1px solid #e2ddd5}.info{margin-top:14px;background:#edf2ec;color:#3b523f;border-radius:8px;padding:11px;font-size:12px;line-height:1.4}
 
 .workspace{padding:18px;overflow:auto}.toolbar{width:1500px;margin:0 auto 10px;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}.toolbar-actions{display:flex;gap:8px}.poster-wrap{min-width:1500px}
-.poster{width:1500px;height:1061px;margin:0 auto;position:relative;overflow:hidden;background:linear-gradient(180deg,#fffefa 0%,#fbf7ee 100%);border:1px solid #cfc7b8;box-shadow:0 10px 28px rgba(0,0,0,.16)}
-.poster:before{content:"";position:absolute;inset:12px;border:1px solid rgba(122,108,84,.24);pointer-events:none}
+.poster{width:1500px;height:1061px;margin:0 auto;position:relative;overflow:hidden;background:linear-gradient(180deg,#fffefa 0%,#fbf7ee 100%);border:5px solid #6f572b;box-shadow:inset 0 0 0 2px #c9a45b,0 10px 28px rgba(0,0,0,.16)}
+.poster:before{content:"";position:absolute;inset:11px;border:1px solid rgba(122,108,84,.34);pointer-events:none;z-index:7}
 
 /* Versjon 4.0: diskret botanisk bakgrunn inspirert av den opprinnelige plakaten */
 .poster-decor{
@@ -102,8 +102,10 @@ button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;te
 .g2{top:316px;grid-template-columns:repeat(4,146px);column-gap:170px}
 .g1{top:510px;grid-template-columns:repeat(2,172px);column-gap:520px}
 .g0{top:696px;display:flex;justify-content:center}
-.person{position:relative;text-align:center;cursor:pointer;filter:drop-shadow(0 2px 2px rgba(40,30,15,.06))}.person.active .card-shell{box-shadow:0 0 0 4px rgba(56,91,67,.17)}
-.card-shell{display:flex;flex-direction:column;align-items:center;background:#fffdf9;border:1px solid #cfc7bb;border-radius:8px;padding:8px 7px 9px;min-height:100%;transition:.15s ease}
+.person{position:relative;text-align:center;cursor:pointer;filter:drop-shadow(0 2px 2px rgba(40,30,15,.06));touch-action:manipulation}
+.person:hover .card-shell{transform:translateY(-2px);box-shadow:0 5px 12px rgba(64,48,25,.12)}
+.person:focus-visible{outline:3px solid rgba(56,91,67,.35);outline-offset:4px;border-radius:10px}.person.active .card-shell{box-shadow:0 0 0 4px rgba(56,91,67,.17)}
+.card-shell{display:flex;flex-direction:column;align-items:center;background:#fffdf9;border:1px solid #cfc7bb;border-radius:8px;padding:8px 7px 9px;min-height:100%;transition:transform .15s ease,box-shadow .15s ease}
 .person.maternal .card-shell{background:var(--mother-bg);border-color:var(--mother)}.person.paternal .card-shell{background:var(--father-bg);border-color:var(--father)}.person.main-person .card-shell{background:#fafcf4;border-color:#7f9a69}
 .portrait{width:54px;height:54px;margin:0 auto 7px;border-radius:50%;border:2px solid #fff;outline:1px solid #c5bcae;background:radial-gradient(circle at 35% 30%,#eee9df,#d8d1c4);object-fit:cover;display:grid;place-items:center;font-weight:700;color:#6c685f;box-shadow:none}
 .plate{min-width:0;max-width:none;margin:0;padding:0;background:none!important;border:0!important;box-shadow:none!important}.pname{font:700 11px/1.12 Georgia,"Times New Roman",serif;overflow-wrap:break-word}.years{font-size:9px;color:#5a544b;margin-top:4px}
@@ -428,6 +430,9 @@ function renderTree(){
       const sideClass=s.generation===0?'main-person':(s.index<Math.pow(2,s.generation-1)?'maternal':'paternal');
       card.className=`person ${sideClass} ${s.id===currentSlot().id?'active':''}`;
       card.dataset.slot=s.id;
+      card.tabIndex=0;
+      card.setAttribute('role','button');
+      card.setAttribute('aria-label',`Rediger ${p.name||s.label}`);
 
       const shell=document.createElement('div');shell.className='card-shell';
       if(p.photo){
@@ -446,9 +451,23 @@ function renderTree(){
       years.textContent=p.birth?(p.death?`${p.birth}–${p.death}`:`${p.birth}–`):'';
       plate.append(name,years);shell.appendChild(plate);card.appendChild(shell);
 
-      card.addEventListener('click',()=>{
+      const openPersonForEditing=()=>{
         current=slots.findIndex(x=>x.id===s.id);
+        if(document.body.classList.contains('preview-mode'))closePoster();
         loadForm();
+        if(isMobileView()){
+          requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'}));
+        }
+      };
+      card.addEventListener('click',event=>{
+        event.stopPropagation();
+        openPersonForEditing();
+      });
+      card.addEventListener('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){
+          event.preventDefault();
+          openPersonForEditing();
+        }
       });
       row.appendChild(card);
     });
@@ -459,39 +478,71 @@ function renderTree(){
   requestAnimationFrame(drawConnections);
 }
 function drawConnections(){
-  const svg=$('connections'),poster=$('poster'),pr=poster.getBoundingClientRect();
+  const svg=$('connections');
+  const poster=$('poster');
+  const pr=poster.getBoundingClientRect();
+  const posterScaleX=pr.width/poster.offsetWidth;
+  const posterScaleY=pr.height/poster.offsetHeight;
+
   svg.innerHTML='';
-  svg.setAttribute('viewBox',`0 0 ${pr.width} ${pr.height}`);
+  svg.setAttribute('viewBox',`0 0 ${poster.offsetWidth} ${poster.offsetHeight}`);
+
   const NS='http://www.w3.org/2000/svg';
+  const crisp=value=>Math.round(value)+0.5;
+
   const point=(id,edge)=>{
     const el=poster.querySelector(`[data-slot="${id}"]`);
     if(!el)return null;
     const r=el.getBoundingClientRect();
+    const left=(r.left-pr.left)/posterScaleX;
+    const top=(r.top-pr.top)/posterScaleY;
+    const width=r.width/posterScaleX;
+    const height=r.height/posterScaleY;
+
     return {
-      x:r.left-pr.left+r.width/2,
-      y:(edge==='top'?r.top:edge==='middle'?r.top+r.height/2:r.bottom)-pr.top
+      x:crisp(left+width/2),
+      y:crisp(edge==='top'?top:edge==='middle'?top+height/2:top+height)
     };
   };
-  const path=(d,width=1.45,opacity=.62)=>{
+
+  const path=(d,width=1.5,opacity=.68)=>{
     const p=document.createElementNS(NS,'path');
-    p.setAttribute('d',d);p.setAttribute('fill','none');
-    p.setAttribute('stroke','#8d7654');p.setAttribute('stroke-width',width);
-    p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round');
-    p.setAttribute('opacity',opacity);svg.appendChild(p);
+    p.setAttribute('d',d);
+    p.setAttribute('fill','none');
+    p.setAttribute('stroke','#8d7654');
+    p.setAttribute('stroke-width',width);
+    p.setAttribute('vector-effect','non-scaling-stroke');
+    p.setAttribute('stroke-linecap','square');
+    p.setAttribute('stroke-linejoin','miter');
+    p.setAttribute('opacity',opacity);
+    svg.appendChild(p);
   };
+
   for(let g=0;g<4;g++){
-    slots.filter(s=>s.generation===g).forEach(child=>{
+    const children=slots.filter(s=>s.generation===g);
+    const parentBottoms=slots
+      .filter(s=>s.generation===g+1)
+      .map(s=>point(s.id,'bottom'))
+      .filter(Boolean);
+    const childTops=children.map(s=>point(s.id,'top')).filter(Boolean);
+
+    if(!parentBottoms.length||!childTops.length)continue;
+
+    // Samme høyde for alle koblinger i samme generasjon gir et roligere uttrykk.
+    const coupleY=crisp(Math.max(...parentBottoms.map(p=>p.y))+20);
+    const joinY=crisp(Math.min(...childTops.map(p=>p.y))-20);
+
+    children.forEach(child=>{
       const childTop=point(child.id,'top');
       const left=point(`g${g+1}_${child.index*2}`,'bottom');
       const right=point(`g${g+1}_${child.index*2+1}`,'bottom');
       if(!childTop||!left||!right)return;
-      const coupleY=Math.max(left.y,right.y)+20;
-      const midX=(left.x+right.x)/2;
-      const joinY=childTop.y-20;
-      // Rene, rette forbindelseslinjer: ned, inn mot midten og videre til barnet.
+
+      const midX=crisp((left.x+right.x)/2);
+
       path(`M ${left.x} ${left.y} V ${coupleY} H ${midX}`);
       path(`M ${right.x} ${right.y} V ${coupleY} H ${midX}`);
-      path(`M ${midX} ${coupleY} V ${joinY} H ${childTop.x} V ${childTop.y}`,1.45,.64);
+      path(`M ${midX} ${coupleY} V ${joinY} H ${childTop.x} V ${childTop.y}`);
     });
   }
 }
@@ -767,7 +818,7 @@ async function downloadPosterImage(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 4.0',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 4.1',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
