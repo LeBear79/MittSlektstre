@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- Mitt Slektstre 5.0: fast koordinatsystem for kort og forbindelseslinjer -->
+<!-- Mitt Slektstre 5.1: myke buede forbindelseslinjer -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 5.0</title>
+<title>Mitt Slektstre 5.1</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -507,7 +507,6 @@ function drawConnections(){
   svg.setAttribute('viewBox',`0 0 ${poster.offsetWidth} ${poster.offsetHeight}`);
 
   const NS='http://www.w3.org/2000/svg';
-  const crisp=value=>Math.round(value)+0.5;
 
   const treeLeft=tree.offsetLeft;
   const treeTop=tree.offsetTop;
@@ -515,7 +514,7 @@ function drawConnections(){
 
   const centerX=(generation,index)=>{
     const count=Math.pow(2,generation);
-    return crisp(treeLeft+treeWidth*((index+.5)/count));
+    return treeLeft+treeWidth*((index+.5)/count);
   };
 
   const cardElement=(generation,index)=>
@@ -523,24 +522,24 @@ function drawConnections(){
 
   const cardTop=(generation,index)=>{
     const el=cardElement(generation,index);
-    return el?crisp(treeTop+el.offsetTop):null;
+    return el?treeTop+el.offsetTop:null;
   };
 
   const cardBottom=(generation,index)=>{
     const el=cardElement(generation,index);
-    return el?crisp(treeTop+el.offsetTop+el.offsetHeight):null;
+    return el?treeTop+el.offsetTop+el.offsetHeight:null;
   };
 
-  const addPath=d=>{
+  const addPath=(d,width=1.7,opacity=.72)=>{
     const p=document.createElementNS(NS,'path');
     p.setAttribute('d',d);
     p.setAttribute('fill','none');
     p.setAttribute('stroke','#8d7654');
-    p.setAttribute('stroke-width','1.5');
+    p.setAttribute('stroke-width',width);
     p.setAttribute('vector-effect','non-scaling-stroke');
-    p.setAttribute('stroke-linecap','square');
-    p.setAttribute('stroke-linejoin','miter');
-    p.setAttribute('opacity','.72');
+    p.setAttribute('stroke-linecap','round');
+    p.setAttribute('stroke-linejoin','round');
+    p.setAttribute('opacity',opacity);
     svg.appendChild(p);
   };
 
@@ -561,20 +560,30 @@ function drawConnections(){
 
       if(leftBottom===null||rightBottom===null||childY===null)continue;
 
-      const parentLineY=crisp(Math.max(leftBottom,rightBottom)+20);
-      const childJoinY=crisp(childY-20);
-      const familyCenterX=crisp((leftX+rightX)/2);
+      const parentJoinY=Math.max(leftBottom,rightBottom)+22;
+      const childJoinY=childY-22;
+      const familyCenterX=(leftX+rightX)/2;
 
-      addPath(
-        `M ${leftX} ${leftBottom}` +
-        ` V ${parentLineY}` +
-        ` H ${rightX}` +
-        ` V ${rightBottom}` +
-        ` M ${familyCenterX} ${parentLineY}` +
-        ` V ${childJoinY}` +
-        ` H ${childX}` +
-        ` V ${childY}`
-      );
+      // Myke kurver fra hver forelder inn mot familiens sentrum.
+      const leftCurve =
+        `M ${leftX} ${leftBottom} ` +
+        `C ${leftX} ${parentJoinY-8}, ${familyCenterX-18} ${parentJoinY-6}, ${familyCenterX} ${parentJoinY}`;
+
+      const rightCurve =
+        `M ${rightX} ${rightBottom} ` +
+        `C ${rightX} ${parentJoinY-8}, ${familyCenterX+18} ${parentJoinY-6}, ${familyCenterX} ${parentJoinY}`;
+
+      // Myk kurve fra familiens sentrum ned til barnet.
+      const verticalDistance=Math.max(40,childJoinY-parentJoinY);
+      const childCurve =
+        `M ${familyCenterX} ${parentJoinY} ` +
+        `C ${familyCenterX} ${parentJoinY+verticalDistance*.34}, ` +
+        `${childX} ${childJoinY-verticalDistance*.34}, ` +
+        `${childX} ${childY}`;
+
+      addPath(leftCurve);
+      addPath(rightCurve);
+      addPath(childCurve,1.8,.74);
     }
   }
 }
@@ -850,7 +859,7 @@ async function downloadPosterImage(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.0',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.1',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
