@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- Mitt Slektstre 4.2: felles 32-kolonne rutenett og symmetriske forbindelseslinjer -->
+<!-- Mitt Slektstre 5.0: fast koordinatsystem for kort og forbindelseslinjer -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 4.2</title>
+<title>Mitt Slektstre 5.0</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -100,10 +100,16 @@ button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;te
   position:absolute;
   left:0;
   right:0;
-  display:grid;
-  grid-template-columns:repeat(32,minmax(0,1fr));
-  justify-items:center;
-  align-items:start;
+  height:1px;
+}
+.gen .person{
+  position:absolute;
+  left:var(--x);
+  top:0;
+  transform:translateX(-50%);
+}
+.gen .person:hover{
+  transform:translateX(-50%) translateY(-2px);
 }
 .g4{top:0}
 .g3{top:146px}
@@ -111,7 +117,7 @@ button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;te
 .g1{top:510px}
 .g0{top:696px}
 .person{position:relative;text-align:center;cursor:pointer;filter:drop-shadow(0 2px 2px rgba(40,30,15,.06));touch-action:manipulation}
-.person:hover .card-shell{transform:translateY(-2px);box-shadow:0 5px 12px rgba(64,48,25,.12)}
+.person:hover .card-shell{box-shadow:0 5px 12px rgba(64,48,25,.12)}
 .person:focus-visible{outline:3px solid rgba(56,91,67,.35);outline-offset:4px;border-radius:10px}.person.active .card-shell{box-shadow:0 0 0 4px rgba(56,91,67,.17)}
 .card-shell{display:flex;flex-direction:column;align-items:center;background:#fffdf9;border:1px solid #cfc7bb;border-radius:8px;padding:8px 7px 9px;min-height:100%;transition:transform .15s ease,box-shadow .15s ease}
 .person.maternal .card-shell{background:var(--mother-bg);border-color:var(--mother)}.person.paternal .card-shell{background:var(--father-bg);border-color:var(--father)}.person.main-person .card-shell{background:#fafcf4;border-color:#7f9a69}
@@ -438,11 +444,12 @@ function renderTree(){
       card.className=`person ${sideClass} ${s.id===currentSlot().id?'active':''}`;
       card.dataset.slot=s.id;
 
-      // Alle generasjoner bruker det samme 32-kolonne-rutenettet.
-      // Dermed står hvert barn matematisk midt mellom sine to foreldre.
-      const columnSpan=32/Math.pow(2,s.generation);
-      const columnStart=s.index*columnSpan+1;
-      card.style.gridColumn=`${columnStart} / span ${columnSpan}`;
+      // Fast koordinatsystem: hvert kort plasseres på midtpunktet
+      // i sin del av generasjonen. Barnets sentrum blir dermed alltid
+      // nøyaktig midt mellom sentrumspunktene til foreldrene.
+      const generationCount=Math.pow(2,s.generation);
+      const xPercent=((s.index+.5)/generationCount)*100;
+      card.style.setProperty('--x',`${xPercent}%`);
 
       card.tabIndex=0;
       card.setAttribute('role','button');
@@ -494,9 +501,7 @@ function renderTree(){
 function drawConnections(){
   const svg=$('connections');
   const poster=$('poster');
-  const pr=poster.getBoundingClientRect();
-  const scaleX=pr.width/poster.offsetWidth;
-  const scaleY=pr.height/poster.offsetHeight;
+  const tree=$('tree');
 
   svg.innerHTML='';
   svg.setAttribute('viewBox',`0 0 ${poster.offsetWidth} ${poster.offsetHeight}`);
@@ -504,19 +509,26 @@ function drawConnections(){
   const NS='http://www.w3.org/2000/svg';
   const crisp=value=>Math.round(value)+0.5;
 
-  const point=(id,edge)=>{
-    const el=poster.querySelector(`[data-slot="${id}"]`);
-    if(!el)return null;
-    const r=el.getBoundingClientRect();
-    const left=(r.left-pr.left)/scaleX;
-    const top=(r.top-pr.top)/scaleY;
-    const width=r.width/scaleX;
-    const height=r.height/scaleY;
+  const treeLeft=tree.offsetLeft;
+  const treeTop=tree.offsetTop;
+  const treeWidth=tree.clientWidth;
 
-    return {
-      x:crisp(left+width/2),
-      y:crisp(edge==='top'?top:top+height)
-    };
+  const centerX=(generation,index)=>{
+    const count=Math.pow(2,generation);
+    return crisp(treeLeft+treeWidth*((index+.5)/count));
+  };
+
+  const cardElement=(generation,index)=>
+    tree.querySelector(`[data-slot="g${generation}_${index}"]`);
+
+  const cardTop=(generation,index)=>{
+    const el=cardElement(generation,index);
+    return el?crisp(treeTop+el.offsetTop):null;
+  };
+
+  const cardBottom=(generation,index)=>{
+    const el=cardElement(generation,index);
+    return el?crisp(treeTop+el.offsetTop+el.offsetHeight):null;
   };
 
   const addPath=d=>{
@@ -528,36 +540,42 @@ function drawConnections(){
     p.setAttribute('vector-effect','non-scaling-stroke');
     p.setAttribute('stroke-linecap','square');
     p.setAttribute('stroke-linejoin','miter');
-    p.setAttribute('opacity','.7');
+    p.setAttribute('opacity','.72');
     svg.appendChild(p);
   };
 
   for(let generation=0;generation<4;generation++){
-    const children=slots.filter(s=>s.generation===generation);
+    const childCount=Math.pow(2,generation);
 
-    children.forEach(child=>{
-      const childTop=point(child.id,'top');
-      const leftParent=point(`g${generation+1}_${child.index*2}`,'bottom');
-      const rightParent=point(`g${generation+1}_${child.index*2+1}`,'bottom');
-      if(!childTop||!leftParent||!rightParent)return;
+    for(let childIndex=0;childIndex<childCount;childIndex++){
+      const leftParentIndex=childIndex*2;
+      const rightParentIndex=leftParentIndex+1;
 
-      const parentLineY=crisp(Math.max(leftParent.y,rightParent.y)+20);
-      const childJoinY=crisp(childTop.y-20);
-      const familyCenterX=crisp((leftParent.x+rightParent.x)/2);
+      const leftX=centerX(generation+1,leftParentIndex);
+      const rightX=centerX(generation+1,rightParentIndex);
+      const childX=centerX(generation,childIndex);
 
-      // Én lukket og symmetrisk forbindelse for hver familie:
-      // ned fra foreldrene, vannrett mellom dem og deretter midt ned til barnet.
+      const leftBottom=cardBottom(generation+1,leftParentIndex);
+      const rightBottom=cardBottom(generation+1,rightParentIndex);
+      const childY=cardTop(generation,childIndex);
+
+      if(leftBottom===null||rightBottom===null||childY===null)continue;
+
+      const parentLineY=crisp(Math.max(leftBottom,rightBottom)+20);
+      const childJoinY=crisp(childY-20);
+      const familyCenterX=crisp((leftX+rightX)/2);
+
       addPath(
-        `M ${leftParent.x} ${leftParent.y}` +
+        `M ${leftX} ${leftBottom}` +
         ` V ${parentLineY}` +
-        ` H ${rightParent.x}` +
-        ` V ${rightParent.y}` +
+        ` H ${rightX}` +
+        ` V ${rightBottom}` +
         ` M ${familyCenterX} ${parentLineY}` +
         ` V ${childJoinY}` +
-        ` H ${childTop.x}` +
-        ` V ${childTop.y}`
+        ` H ${childX}` +
+        ` V ${childY}`
       );
-    });
+    }
   }
 }
 const posterView={
@@ -832,7 +850,7 @@ async function downloadPosterImage(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 4.2',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.0',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
@@ -905,6 +923,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closePoster()});
 window.addEventListener('resize',()=>{requestAnimationFrame(drawConnections);if(document.body.classList.contains('preview-mode'))requestAnimationFrame(fitPoster)});
 setupPosterInteractions();
 loadForm();
+window.addEventListener('load',()=>{
+  requestAnimationFrame(()=>requestAnimationFrame(drawConnections));
+});
+document.fonts?.ready?.then(()=>requestAnimationFrame(drawConnections));
 </script>
 </body>
 </html>
