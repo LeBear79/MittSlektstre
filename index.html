@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- Mitt Slektstre 5.2: korrigert kort- og linjeposisjon -->
+<!-- Mitt Slektstre 5.3: mobil forhåndsvisning og trykkredigering -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 5.2</title>
+<title>Mitt Slektstre 5.3</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -138,7 +138,49 @@ button,.file-btn{border:0;border-radius:7px;padding:10px 12px;font-weight:700;te
 .export-status-box span{font-size:13px;color:var(--muted);line-height:1.45}
 
 body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,body.preview-mode .toolbar{display:none}body.preview-mode .app{display:block}body.preview-mode .workspace{position:fixed;inset:0;padding:0;overflow:hidden;background:#d9d5ce;z-index:999}body.preview-mode .poster-wrap{position:absolute;inset:0;min-width:0;width:100%;height:100%!important;overflow:hidden;display:block;touch-action:none;cursor:grab}body.preview-mode .poster-wrap.dragging{cursor:grabbing}body.preview-mode .poster{position:absolute;left:0;top:0;margin:0;transform-origin:0 0;will-change:transform;user-select:none}body.preview-mode .preview-exit{display:block}body.preview-mode .poster-controls{display:flex}
-@media(max-width:900px){body:not(.preview-mode){overflow-x:hidden}body:not(.preview-mode) .app{display:block}body:not(.preview-mode) .sidebar{width:100%;min-height:100vh;border-right:0;padding:16px}body:not(.preview-mode) .workspace{display:none}.sidebar h1{font-size:25px}.lead{font-size:13px}.editor{padding:14px}button,.file-btn{min-height:45px}input,select{font-size:16px}.preview-exit{top:10px;right:10px;max-width:calc(100vw - 20px)}}
+@media(max-width:900px){
+  body:not(.preview-mode){overflow-x:hidden}
+  body:not(.preview-mode) .app{display:block}
+  body:not(.preview-mode) .sidebar{
+    width:100%;
+    min-height:0;
+    border-right:0;
+    border-bottom:1px solid #d8d2c8;
+    padding:16px;
+  }
+  body:not(.preview-mode) .workspace{
+    display:block;
+    width:100%;
+    padding:14px 10px 22px;
+    overflow:hidden;
+    background:#d9d5ce;
+  }
+  body:not(.preview-mode) .toolbar{display:none}
+  body:not(.preview-mode) .poster-wrap{
+    position:relative;
+    width:100%;
+    min-width:0;
+    margin:0 auto;
+    overflow:hidden;
+    border-radius:5px;
+    box-shadow:0 5px 18px rgba(0,0,0,.18);
+    background:#f8f5ee;
+  }
+  body:not(.preview-mode) .poster{
+    position:absolute;
+    left:0;
+    top:0;
+    margin:0;
+    transform-origin:0 0;
+    will-change:transform;
+  }
+  .sidebar h1{font-size:25px}
+  .lead{font-size:13px}
+  .editor{padding:14px}
+  button,.file-btn{min-height:45px}
+  input,select{font-size:16px}
+  .preview-exit{top:10px;right:10px;max-width:calc(100vw - 20px)}
+}
 @media print{
   @page{size:A3 landscape;margin:0}
   html,body{width:420mm;height:297mm;margin:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -496,7 +538,10 @@ function renderTree(){
   }
   const main=people.g0_0;
   $('posterTitle').textContent=main?.name?`${firstName(main.name).toUpperCase()}S SLEKTSTRE`:'MITT SLEKTSTRE';
-  requestAnimationFrame(drawConnections);
+  requestAnimationFrame(()=>{
+    drawConnections();
+    fitInlineMobilePoster();
+  });
 }
 function drawConnections(){
   const svg=$('connections');
@@ -615,6 +660,28 @@ function applyPosterTransform(){
   poster.style.transform=`translate(${posterView.x}px,${posterView.y}px) scale(${posterView.scale})`;
   requestAnimationFrame(drawConnections);
 }
+function fitInlineMobilePoster(){
+  const {poster,wrap}=posterElements();
+  if(!poster||!wrap)return;
+
+  if(document.body.classList.contains('preview-mode')||!isMobileView()){
+    if(!document.body.classList.contains('preview-mode')){
+      poster.style.transform='';
+      wrap.style.height='';
+    }
+    return;
+  }
+
+  const availableWidth=Math.max(1,wrap.clientWidth);
+  const scale=availableWidth/poster.offsetWidth;
+  const scaledHeight=poster.offsetHeight*scale;
+
+  poster.style.transform=`translate(0px,0px) scale(${scale})`;
+  wrap.style.height=`${scaledHeight}px`;
+
+  requestAnimationFrame(drawConnections);
+}
+
 function fitPoster(){
   const {poster,wrap}=posterElements();
   if(!poster||!wrap)return;
@@ -670,7 +737,10 @@ function closePoster(){
   const {poster}=posterElements();
   poster.style.transform='';
   posterView.dragging=false;
-  requestAnimationFrame(drawConnections);
+  requestAnimationFrame(()=>{
+    fitInlineMobilePoster();
+    drawConnections();
+  });
 }
 function touchDistance(touches){
   const dx=touches[0].clientX-touches[1].clientX;
@@ -718,6 +788,13 @@ function setupPosterInteractions(){
 
   wrap.addEventListener('touchstart',event=>{
     if(!document.body.classList.contains('preview-mode'))return;
+
+    const touchedPerson=event.target.closest?.('.person');
+    if(event.touches.length===1&&touchedPerson){
+      posterView.dragging=false;
+      return;
+    }
+
     event.preventDefault();
     if(event.touches.length===1){
       posterView.dragging=true;
@@ -732,6 +809,7 @@ function setupPosterInteractions(){
 
   wrap.addEventListener('touchmove',event=>{
     if(!document.body.classList.contains('preview-mode'))return;
+    if(event.touches.length===1&&!posterView.dragging)return;
     event.preventDefault();
     if(event.touches.length===1&&posterView.dragging){
       const t=event.touches[0];
@@ -843,7 +921,7 @@ async function downloadPosterImage(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.2',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.3',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
@@ -913,11 +991,20 @@ $('resetAll').onclick=()=>{
   }
 };
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePoster()});
-window.addEventListener('resize',()=>{requestAnimationFrame(drawConnections);if(document.body.classList.contains('preview-mode'))requestAnimationFrame(fitPoster)});
+window.addEventListener('resize',()=>{
+  requestAnimationFrame(()=>{
+    if(document.body.classList.contains('preview-mode'))fitPoster();
+    else fitInlineMobilePoster();
+    drawConnections();
+  });
+});
 setupPosterInteractions();
 loadForm();
 window.addEventListener('load',()=>{
-  requestAnimationFrame(()=>requestAnimationFrame(drawConnections));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    fitInlineMobilePoster();
+    drawConnections();
+  }));
 });
 document.fonts?.ready?.then(()=>requestAnimationFrame(drawConnections));
 </script>
