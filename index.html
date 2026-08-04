@@ -1,10 +1,10 @@
 <!doctype html>
-<!-- Mitt Slektstre 5.4.1: synlige personopplysninger og versjonsmerke -->
+<!-- Mitt Slektstre 5.5: enkel biografi per person -->
 <html lang="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitt Slektstre 5.4.1</title>
+<title>Mitt Slektstre 5.5</title>
 <style>
 :root{
   --green:#385b43;--green-soft:#eef3ea;--ink:#25231f;--muted:#746f66;
@@ -24,32 +24,12 @@ button,input,select{font:inherit} button{cursor:pointer}
 .kicker{font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em}.editor h2{margin:4px 0}.note{font-size:13px;color:var(--muted);margin:0 0 14px}
 .preview{width:92px;height:92px;border-radius:50%;margin:0 auto 14px;display:grid;place-items:center;background:#e7e3da;border:3px solid #fff;outline:1px solid #b9aa91;overflow:hidden;font-size:24px;color:#777;font-weight:700}.preview img{width:100%;height:100%;object-fit:cover}
 .field{margin-bottom:12px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #cfc9bf;border-radius:7px;background:#fff}
-.field textarea{min-height:88px;resize:vertical;line-height:1.45}
+.field textarea{min-height:190px;resize:vertical;line-height:1.5}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .more-details{margin:13px 0 0;border-top:1px solid #e2ddd5;padding-top:12px}
 .more-details summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--green);padding:3px 0 10px}
 .more-details[open] summary{margin-bottom:4px}
-.detail-modal{display:none;position:fixed;inset:0;z-index:2500;background:rgba(28,27,24,.66);padding:18px;align-items:center;justify-content:center}
-.detail-modal.show{display:flex}
-.detail-card{width:min(620px,100%);max-height:90vh;overflow:auto;background:#fffdf8;border:1px solid #d0c7b8;border-radius:14px;box-shadow:0 18px 55px rgba(0,0,0,.3)}
-.detail-head{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;background:#fffdf8;border-bottom:1px solid #e2dcd2;z-index:1}
-.detail-head h2{margin:0;color:var(--green);font:700 24px Georgia,serif}
-.detail-close{width:42px;height:42px;padding:0;display:grid;place-items:center;background:#ece9e3;color:#352f28;font-size:22px}
-.detail-body{padding:18px}
-.detail-profile{display:flex;align-items:center;gap:16px;margin-bottom:18px}
-.detail-photo{width:96px;height:96px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;overflow:hidden;background:#e7e3da;border:3px solid #fff;outline:1px solid #b9aa91;font-size:25px;font-weight:700;color:#777}
-.detail-photo img{width:100%;height:100%;object-fit:cover}
-.detail-name{font:700 25px Georgia,serif;margin:0 0 4px}
-.detail-relation{font-size:13px;color:var(--muted)}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
-.detail-item{padding:10px 0;border-bottom:1px solid #eee9e1}
-.detail-item.wide{grid-column:1/-1}
-.detail-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
-.detail-value{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.48}
-.detail-empty{color:var(--muted);font-style:italic}
-@media(max-width:600px){
-  .detail-grid{grid-template-columns:1fr}
-  .detail-item.wide{grid-column:auto}
+
   .detail-profile{align-items:flex-start}
   .detail-photo{width:78px;height:78px}
 }
@@ -214,7 +194,7 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
   @page{size:A3 landscape;margin:0}
   html,body{width:420mm;height:297mm;margin:0!important;background:#fff!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
   body{display:flex;align-items:center;justify-content:center;overflow:hidden!important}
-  .sidebar,.toolbar,.preview-exit,.poster-controls,.export-status,.detail-modal{display:none!important}
+  .sidebar,.toolbar,.preview-exit,.poster-controls,.export-status{display:none!important}
   .app{display:block;width:100%;height:100%}
   .workspace{width:100%;height:100%;padding:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
   .poster-wrap{min-width:0;width:100%;height:100%!important;overflow:hidden;display:flex;align-items:center;justify-content:center}
@@ -242,16 +222,6 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
   </div>
 </div>
 
-<div class="detail-modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-  <div class="detail-card">
-    <div class="detail-head">
-      <h2 id="detailTitle">Personinformasjon</h2>
-      <button class="detail-close" id="detailClose" type="button" aria-label="Lukk">×</button>
-    </div>
-    <div class="detail-body" id="detailBody"></div>
-  </div>
-</div>
-
 <button class="preview-exit" id="previewExit">Tilbake til redigering</button>
 <div class="poster-controls" id="posterControls" aria-label="Kontroller for plakaten">
   <button type="button" id="zoomOut" aria-label="Zoom ut">−</button>
@@ -260,7 +230,7 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
 </div>
 <div class="app">
 <aside class="sidebar">
-  <h1>Mitt Slektstre</h1><div class="version-badge">Versjon 5.4.1</div>
+  <h1>Mitt Slektstre</h1><div class="version-badge">Versjon 5.5</div>
   <p class="lead">Registrer én person om gangen. Plakaten oppdateres automatisk.</p>
   <div class="progress-head"><span id="stepText">Steg 1 av 31</span><span id="countText">0 registrert</span></div>
   <div class="progress"><div id="progressBar"></div></div>
@@ -282,24 +252,10 @@ body.preview-mode{overflow:hidden;background:#d9d5ce}body.preview-mode .sidebar,
 
     <details class="more-details" open>
       <summary>Flere opplysninger</summary>
-
-      <div class="row">
-        <div class="field"><label for="birthDate">Fødselsdato</label><input id="birthDate" type="text" placeholder="For eksempel 14.03.1942"></div>
-        <div class="field"><label for="deathDate">Dødsdato</label><input id="deathDate" type="text" placeholder="Valgfritt"></div>
+      <div class="field">
+        <label for="biography">Biografi</label>
+        <textarea id="biography" placeholder="Skriv litt om personens liv, familie, interesser, arbeid og andre minner du ønsker å ta vare på."></textarea>
       </div>
-
-      <div class="row">
-        <div class="field"><label for="birthPlace">Fødested</label><input id="birthPlace" type="text" placeholder="Sted"></div>
-        <div class="field"><label for="deathPlace">Dødssted</label><input id="deathPlace" type="text" placeholder="Valgfritt"></div>
-      </div>
-
-      <div class="field"><label for="residence">Bosted</label><input id="residence" type="text" placeholder="Ett eller flere bosteder"></div>
-      <div class="field"><label for="occupation">Yrke</label><input id="occupation" type="text" placeholder="Yrke eller virksomhet"></div>
-      <div class="field"><label for="partner">Ektefelle eller partner</label><input id="partner" type="text" placeholder="Navn"></div>
-      <div class="field"><label for="biography">Kort biografi eller familiehistorie</label><textarea id="biography" placeholder="Skriv minner, historier og viktige hendelser"></textarea></div>
-      <div class="field"><label for="sources">Kilder og lenker</label><textarea id="sources" placeholder="For eksempel kirkebok, folketelling, nettside eller navn på den som har gitt opplysningene"></textarea></div>
-
-      <button class="ghost" type="button" id="showPersonDetails">Vis personinformasjon</button>
     </details>
 
     <div class="field">
@@ -494,34 +450,20 @@ function loadForm(){
   $('name').value=p.name||'';
   $('birth').value=p.birth||'';
   $('death').value=p.death||'';
-  $('birthDate').value=p.birthDate||'';
-  $('deathDate').value=p.deathDate||'';
-  $('birthPlace').value=p.birthPlace||'';
-  $('deathPlace').value=p.deathPlace||'';
-  $('residence').value=p.residence||'';
-  $('occupation').value=p.occupation||'';
-  $('partner').value=p.partner||'';
   $('biography').value=p.biography||'';
-  $('sources').value=p.sources||'';
   updatePhotoPreview();
   fillSelect();
   updateProgress();
   renderTree();
 }
 function saveForm(){
+  const previous=people[currentSlot().id]||{};
   people[currentSlot().id]={
+    ...previous,
     name:$('name').value.trim(),
     birth:$('birth').value.trim(),
     death:$('death').value.trim(),
-    birthDate:$('birthDate').value.trim(),
-    deathDate:$('deathDate').value.trim(),
-    birthPlace:$('birthPlace').value.trim(),
-    deathPlace:$('deathPlace').value.trim(),
-    residence:$('residence').value.trim(),
-    occupation:$('occupation').value.trim(),
-    partner:$('partner').value.trim(),
     biography:$('biography').value.trim(),
-    sources:$('sources').value.trim(),
     photo:pendingPhoto
   };
   saveStorage();
@@ -555,90 +497,6 @@ function useImage(file){
   if(!file)return;
   compressImage(file,data=>{pendingPhoto=data;updatePhotoPreview()});
 }
-function detailValue(value){
-  const text=(value||'').trim();
-  return text||'Ikke registrert';
-}
-function detailItem(label,value,wide=false){
-  const item=document.createElement('div');
-  item.className=`detail-item${wide?' wide':''}`;
-
-  const heading=document.createElement('span');
-  heading.className='detail-label';
-  heading.textContent=label;
-
-  const content=document.createElement('div');
-  const text=(value||'').trim();
-  content.className=`detail-value${text?'':' detail-empty'}`;
-  content.textContent=text||'Ikke registrert';
-
-  item.append(heading,content);
-  return item;
-}
-function showPersonDetails(){
-  saveForm();
-
-  const slot=currentSlot();
-  const person=people[slot.id]||{};
-  const body=$('detailBody');
-  body.innerHTML='';
-
-  const profile=document.createElement('div');
-  profile.className='detail-profile';
-
-  const photo=document.createElement('div');
-  photo.className='detail-photo';
-  if(person.photo){
-    const img=document.createElement('img');
-    img.src=person.photo;
-    img.alt=person.name||slot.label;
-    photo.appendChild(img);
-  }else{
-    photo.textContent=initials(person.name);
-  }
-
-  const identity=document.createElement('div');
-  const name=document.createElement('div');
-  name.className='detail-name';
-  name.textContent=person.name||slot.label;
-
-  const relation=document.createElement('div');
-  relation.className='detail-relation';
-  relation.textContent=`${slot.label} · ${generationNames[slot.generation]}`;
-
-  identity.append(name,relation);
-  profile.append(photo,identity);
-
-  const grid=document.createElement('div');
-  grid.className='detail-grid';
-
-  const years=person.birth
-    ?(person.death?`${person.birth}–${person.death}`:`${person.birth}–`)
-    :'';
-
-  grid.append(
-    detailItem('Leveår',years),
-    detailItem('Fødselsdato',person.birthDate),
-    detailItem('Fødested',person.birthPlace),
-    detailItem('Dødsdato',person.deathDate),
-    detailItem('Dødssted',person.deathPlace),
-    detailItem('Bosted',person.residence),
-    detailItem('Yrke',person.occupation),
-    detailItem('Ektefelle eller partner',person.partner),
-    detailItem('Biografi eller familiehistorie',person.biography,true),
-    detailItem('Kilder og lenker',person.sources,true)
-  );
-
-  body.append(profile,grid);
-  $('detailTitle').textContent='Personinformasjon';
-  $('detailModal').classList.add('show');
-  document.body.style.overflow='hidden';
-}
-function closePersonDetails(){
-  $('detailModal').classList.remove('show');
-  if(!document.body.classList.contains('preview-mode'))document.body.style.overflow='';
-}
-
 function renderTree(){
   const tree=$('tree');tree.innerHTML='';
   for(let g=4;g>=0;g--){
@@ -1085,7 +943,7 @@ async function downloadPosterImage(){
 
 function exportBackup(){
   saveForm();
-  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.4.1',people},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'Mitt Slektstre 5.5',people},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='slektstre-sikkerhetskopi.json';
@@ -1111,15 +969,6 @@ function importBackup(file){
   };
   reader.readAsText(file);
 }
-
-$('showPersonDetails').onclick=showPersonDetails;
-$('detailClose').onclick=closePersonDetails;
-$('detailModal').addEventListener('click',event=>{
-  if(event.target===$('detailModal'))closePersonDetails();
-});
-document.addEventListener('keydown',event=>{
-  if(event.key==='Escape'&&$('detailModal').classList.contains('show'))closePersonDetails();
-});
 
 $('saveNext').onclick=()=>{saveForm();if(current<slots.length-1)move(1)};
 $('prev').onclick=()=>{saveForm();move(-1)};
